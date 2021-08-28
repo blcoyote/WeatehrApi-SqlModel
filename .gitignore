@@ -5,3 +5,4 @@ __pycache__
 *.bak
 /log/
 *.key
+/node_modules/
