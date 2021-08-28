@@ -1,0 +1,8 @@
+fastapi[all]==0.68.1
+loguru==0.5.3
+bcrypt==3.2.0
+cryptography==3.0
+passlib
+python-jose==3.2.0
+psycopg2_binary==2.8.6
+sqlmodel
