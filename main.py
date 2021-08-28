@@ -4,6 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session, select
 import requests
+from sqlmodel import SQLModel
+import sqlmodel
 import uvicorn
 from urllib import parse
 from loguru import logger
@@ -39,19 +41,20 @@ async def store(ID: str, PASSWORD: str, indoortempf: float, tempf: float, dewptf
                 UV: int, dateutc: str, softwaretype: str, action: str, realtime: int, rtfreq: int):
 
     if PASSWORD == get_settings().ACCESSCTL:
-        # map content to model, since
-        observation = data_models.Observation(indoortempf=indoortempf, tempf=tempf, dewptf=dewptf, windchillf=windchillf,
-                                              indoorhumidity=indoorhumidity, humidity=humidity, windspeedmph=windspeedmph,
-                                              windgustmph=windgustmph, winddir=winddir, absbaromin=absbaromin, baromin=baromin,
-                                              rainin=rainin, dailyrainin=dailyrainin, weeklyrainin=weeklyrainin, monthlyrainin=monthlyrainin,
-                                              solarradiation=solarradiation, UV=UV, dateutc=dateutc, realtime=realtime, rtfreq=rtfreq)
+        # map request to model
+        observation = data_models.Observation(
+            indoortempf=indoortempf, tempf=tempf, dewptf=dewptf, windchillf=windchillf,
+            indoorhumidity=indoorhumidity, humidity=humidity, windspeedmph=windspeedmph,
+            windgustmph=windgustmph, winddir=winddir, absbaromin=absbaromin, baromin=baromin,
+            rainin=rainin, dailyrainin=dailyrainin, weeklyrainin=weeklyrainin, monthlyrainin=monthlyrainin,
+            solarradiation=solarradiation, UV=UV, dateutc=dateutc, realtime=realtime, rtfreq=rtfreq)
 
         try:
             with Session(database.engine) as session:
                 session.add(observation)
                 session.commit()
         except Exception as ex:
-            logger.exception(f"Problem saving observation")
+            logger.exception("Problem saving observation to database")
 
         try:
             if get_settings().WINDY_ENABLED:
