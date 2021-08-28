@@ -51,7 +51,7 @@ async def store(ID: str, PASSWORD: str, indoortempf: float, tempf: float, dewptf
                 session.add(observation)
                 session.commit()
         except Exception as ex:
-            logger.exception(f"Problem saving observation: {ex}")
+            logger.exception(f"Problem saving observation")
 
         try:
             if get_settings().WINDY_ENABLED:
@@ -61,7 +61,7 @@ async def store(ID: str, PASSWORD: str, indoortempf: float, tempf: float, dewptf
                 requests.get(url)
 
         except Exception as ex:
-            logger.error(f"Error pushing data to windy: {ex}")
+            logger.exception(f"Error pushing data to windy")
 
         return
 
@@ -99,7 +99,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         user = security.authenticate_user(database.user_lookup(
             form_data.username), form_data.username, form_data.password)
     except Exception as ex:
-
+        logger.exception(f"Problem logging in that isnt 401 related")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Incorrect username or password",
