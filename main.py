@@ -1,14 +1,15 @@
-from datetime import datetime, timedelta
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.staticfiles import StaticFiles
 from sqlmodel import Session, select
+
 import requests
-from sqlmodel import SQLModel
-import sqlmodel
 import uvicorn
-from urllib import parse
+from datetime import datetime, timedelta
 from loguru import logger
+from urllib import parse
+
 from core import security, data_models, database
 from core.settings import get_settings
 
@@ -31,8 +32,12 @@ async def startup_event():
         f"./log/apilog_{datetime.now().strftime('%Y-%m-%d')}.log", rotation="1 day")
     logger.debug("Starting logging.")
 
+# Host wwwroot from /
+app.mount("/", StaticFiles(directory="wwwroot"), name="wwwroot")
 
 # posting weather data from station. not user endpoint.
+
+
 @app.get("/weatherstation/updateweatherstation.php", status_code=status.HTTP_201_CREATED)
 async def store(ID: str, PASSWORD: str, indoortempf: float, tempf: float, dewptf: float,
                 windchillf: float, indoorhumidity: float, humidity: float, windspeedmph: float,
