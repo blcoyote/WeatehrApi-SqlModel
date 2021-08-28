@@ -1,0 +1,8 @@
+.env
+/env/
+.vscode
+__pycache__
+*.bak
+/log/
+*.key
+/node_modules/
