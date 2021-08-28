@@ -162,7 +162,6 @@ async def read_own_items(current_user: data_models.User = Depends(security.get_c
     return [{"item_id": "Foo", "owner": current_user.username}]
 
 
-# Dev mode launch
+# Dev mode launcher - not needed for prod
 if __name__ == '__main__':
-
     uvicorn.run(app)
