@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session, select
 import requests
+from starlette.status import HTTP_200_OK, HTTP_204_NO_CONTENT
 import uvicorn
 from urllib import parse
 from loguru import logger
@@ -31,7 +32,7 @@ async def startup_event():
 
 
 # posting weather data from station. not user endpoint.
-@app.get("/weatherstation/updateweatherstation.php")
+@app.get("/weatherstation/updateweatherstation.php", status_code=status.HTTP_201_CREATED)
 async def store(ID: str, PASSWORD: str, indoortempf: float, tempf: float, dewptf: float,
                 windchillf: float, indoorhumidity: float, humidity: float, windspeedmph: float,
                 windgustmph: float, winddir: int, absbaromin: float, baromin: float, rainin: float,
@@ -71,15 +72,31 @@ async def store(ID: str, PASSWORD: str, indoortempf: float, tempf: float, dewptf
         )
 
 
-# returns list of Observation objects based on input criteria.
-@app.get("/weatherstation/getweather")
+# Returns list of Observation objects based on input criteria.
+# TODO: rework result_interval. Currently slices results and returns every Nth item.
+# To get hourly intervals enter 12 as incoming observersions are stored every 5 minutes.
+@app.get("/weatherstation/getweather", status_code=HTTP_200_OK)
 async def get_weather(day_delta: int = 1, result_interval: int = 12, current_user: data_models.User = Depends(security.get_current_active_user)):
+
+    if (day_delta > 31 or day_delta <= 0):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="day_delta must be between 0 and 31"
+        )
+    if result_interval <= 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="result_interval must be a non-zero positive value"
+        )
+
     time = datetime.utcnow() - timedelta(days=day_delta)
+
     try:
         with Session(database.engine) as session:
-            statement = select(data_models.Observation).where(
-                data_models.Observation.dateutc > time).order_by(
-                    data_models.Observation.id.desc())
+            statement = select(data_models.Observation
+                               ).where(data_models.Observation.dateutc > time
+                                       ).order_by(data_models.Observation.id.desc())
+
             results = session.exec(statement).all()
             return results[::result_interval]
     except Exception as ex:
@@ -87,48 +104,53 @@ async def get_weather(day_delta: int = 1, result_interval: int = 12, current_use
             f"failed weather lookup with day_delta: {day_delta}, result_interval {result_interval}, current_user: {current_user}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Database lookup failed",
-            headers={"WWW-Authenticate": "Bearer"},
+            detail="Database lookup failed"
         )
 
 
 # Login endpoint
-@app.post("/token", response_model=data_models.Token)
+@app.post("/token", response_model=data_models.Token, status_code=status.HTTP_202_ACCEPTED)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+
     try:
         user = security.authenticate_user(database.user_lookup(
             form_data.username), form_data.username, form_data.password)
+
     except Exception as ex:
         logger.exception(f"Problem logging in that isnt 401 related")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
+            detail="Incorrect username or password"
         )
 
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
+            headers={"WWW-Authenticate": "Bearer"}
         )
     access_token_expires = timedelta(
-        minutes=get_settings().ACCESS_TOKEN_EXPIRE_MINUTES)
+        minutes=get_settings().ACCESS_TOKEN_EXPIRE_MINUTES
+    )
     access_token = security.create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
 
-    return {"access_token": access_token, "token_type": "bearer", "expiry": datetime.now() + timedelta(minutes=get_settings().ACCESS_TOKEN_EXPIRE_MINUTES)}
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "expiry": datetime.now() + timedelta(minutes=get_settings().ACCESS_TOKEN_EXPIRE_MINUTES)
+    }
 
 
 # test endpoint1 to be deactivated
-@app.get("/users/me/", response_model=data_models.User)
+@app.get("/users/me/", response_model=data_models.User, status_code=status.HTTP_200_OK)
 async def read_users_me(current_user: data_models.User = Depends(security.get_current_active_user)):
     return current_user
 
 
 # test endpoint 2 to be deactivated
-@app.get("/users/me/items/")
+@app.get("/users/me/items/", status_code=status.HTTP_200_OK)
 async def read_own_items(current_user: data_models.User = Depends(security.get_current_active_user)):
     return [{"item_id": "Foo", "owner": current_user.username}]
 
