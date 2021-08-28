@@ -5,3 +5,4 @@ __pycache__
 /log/
 *.key
 /node_modules/
+unnamed-frontend/package-lock.json
