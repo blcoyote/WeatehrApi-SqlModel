@@ -15,28 +15,22 @@ class TokenData(BaseModel):
     username: Optional[str] = None
 
 
-# APIuser doesn't extend the User class since APIuser is used for table migrations
-class ApiUser(SQLModel, table=True):
+# Default user class, this is the one to interact with.
+class User(SQLModel):
     id: Optional[int] = Field(default=None, primary_key=True)
     full_name: str
     username: str
     email: str
-    hashedpassword: str
     disabled: Optional[bool] = Field(default=False)
     roles: Optional[str] = Field(default="appuser")
     created: Optional[datetime] = Field(default=datetime.utcnow())
 
 
-# Class to return user requests.
-# Dont ever return ApiUSer instances, since it includes hashedpasword.
-class User(BaseModel):
-    id: int
-    username: str
-    full_name: str
-    email: str
-    disabled: Optional[bool] = None
-    roles: Optional[str] = None
-    created: Optional[datetime] = None
+# Dont ever return FullUser instances - ALWAYS return at 'User' at maximum, since it includes hashedpasword.
+# FullUser is only need during creation or resetting of password.
+class FullUser(User, table=True):
+    __tablename__ = "Users"
+    hashedpassword: str
 
 
 # Opservation class is used for both storage and retrieval operations.

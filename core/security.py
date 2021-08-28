@@ -34,14 +34,14 @@ def get_password_hash(password):
 
 
 @logger.catch
-def get_user(user: data_models.ApiUser, username: str):
+def get_user(user: data_models.FullUser, username: str):
     if username == user.username:
         return user
 
 
 @logger.catch
 def authenticate_user(db, username: str, password: str):
-    user = get_user(db, username)
+    user: data_models.FullUser = get_user(db, username)
     if not user:
         return False
     if not verify_password(password, user.hashedpassword):
@@ -86,7 +86,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 
 
 @logger.catch
-async def get_current_active_user(current_user: data_models.ApiUser = Depends(get_current_user)):
+async def get_current_active_user(current_user: data_models.FullUser = Depends(get_current_user)):
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user

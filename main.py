@@ -4,7 +4,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session, select
 import requests
-from starlette.status import HTTP_200_OK, HTTP_204_NO_CONTENT
 import uvicorn
 from urllib import parse
 from loguru import logger
@@ -40,7 +39,7 @@ async def store(ID: str, PASSWORD: str, indoortempf: float, tempf: float, dewptf
                 UV: int, dateutc: str, softwaretype: str, action: str, realtime: int, rtfreq: int):
 
     if PASSWORD == get_settings().ACCESSCTL:
-
+        # map content to model, since
         observation = data_models.Observation(indoortempf=indoortempf, tempf=tempf, dewptf=dewptf, windchillf=windchillf,
                                               indoorhumidity=indoorhumidity, humidity=humidity, windspeedmph=windspeedmph,
                                               windgustmph=windgustmph, winddir=winddir, absbaromin=absbaromin, baromin=baromin,
@@ -75,7 +74,7 @@ async def store(ID: str, PASSWORD: str, indoortempf: float, tempf: float, dewptf
 # Returns list of Observation objects based on input criteria.
 # TODO: rework result_interval. Currently slices results and returns every Nth item.
 # To get hourly intervals enter 12 as incoming observersions are stored every 5 minutes.
-@app.get("/weatherstation/getweather", status_code=HTTP_200_OK)
+@app.get("/weatherstation/getweather", status_code=status.HTTP_200_OK)
 async def get_weather(day_delta: int = 1, result_interval: int = 12, current_user: data_models.User = Depends(security.get_current_active_user)):
 
     if (day_delta > 31 or day_delta <= 0):
@@ -156,7 +155,6 @@ async def read_own_items(current_user: data_models.User = Depends(security.get_c
 
 
 # Dev mode launch
-
 if __name__ == '__main__':
 
     uvicorn.run(app)
