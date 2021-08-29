@@ -33,7 +33,8 @@ async def startup_event():
     logger.debug("Starting logging.")
 
 # Host wwwroot from /
-app.mount("/", StaticFiles(directory="wwwroot"), name="wwwroot")
+app.mount("/", StaticFiles(directory="wwwroot",
+          html=True), name="Vejret i Galten")
 
 # posting weather data from station. not user endpoint.
 
