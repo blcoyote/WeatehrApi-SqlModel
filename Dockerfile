@@ -18,7 +18,7 @@ RUN npm run build
 # Build host image
 FROM library/python:3.9-slim-buster
 
-# Change user so we dont run as root.
+# Change user so we dont run our application as root.
 RUN groupadd -g 2000 apiuser && useradd -m -u 2001 -g apiuser apiuser
 
 # Set up virtual environment
