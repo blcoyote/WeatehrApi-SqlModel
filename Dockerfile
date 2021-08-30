@@ -4,11 +4,11 @@ FROM node:13.12.0-alpine as build
 #setup and install dependencies
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
-COPY ./unnamed-frontend/package.json ./
+COPY ./frontend/package.json ./
 RUN npm install --silent
 
 #copy source files to container
-COPY ./unnamed-frontend ./
+COPY ./frontend ./
 
 # build webapp
 RUN npm run build

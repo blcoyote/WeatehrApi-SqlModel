@@ -1,6 +1,6 @@
 
-unnamed-frontend/node_modules
-unnamed-frontend/build
+frontend/node_modules
+frontend/build
 .dockerignore
 Dockerfile
 Dockerfile.prod
