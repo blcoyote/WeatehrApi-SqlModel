@@ -18,13 +18,13 @@ RUN npm run build
 # Build host image
 FROM library/python:3.9-slim-buster
 
-# Change user so we dont run our application as root.
-RUN groupadd -g 2000 apiuser && useradd -m -u 2001 -g apiuser apiuser
-
 # Set up virtual environment
 ENV VIRTUAL_ENV=/opt/venv
 RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+# add user
+RUN groupadd -g 2000 apiuser && useradd -m -u 2001 -g apiuser apiuser
 
 # transfer project files
 COPY ./weatherApi /app
@@ -34,6 +34,10 @@ WORKDIR /app
 # Install dependencies:
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
+
+# Change user so we dont run our application as root.
+RUN chown -R apiuser:apiuser /app
+USER apiuser
 
 # expose port 80 and let nginx handle https
 EXPOSE 80
