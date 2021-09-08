@@ -1,6 +1,5 @@
 from pydantic import BaseSettings
 from functools import lru_cache
-from cryptography.fernet import Fernet
 
 
 class Settings(BaseSettings):
