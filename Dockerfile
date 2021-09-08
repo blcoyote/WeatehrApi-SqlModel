@@ -16,7 +16,7 @@ RUN npm run build
 
 
 # Build host image
-FROM library/python:3.9-slim-buster
+FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9
 
 # Set up virtual environment
 ENV VIRTUAL_ENV=/opt/venv

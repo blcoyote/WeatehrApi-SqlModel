@@ -4,10 +4,11 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.staticfiles import StaticFiles
 from sqlmodel import Session, select
 
+from loguru import logger
+
 import requests
 import uvicorn
 from datetime import datetime, timedelta
-from loguru import logger
 from urllib import parse
 
 from core import security, data_models, database
@@ -32,9 +33,6 @@ async def startup_event():
         f"./log/apilog_{datetime.now().strftime('%Y-%m-%d')}.log", rotation="1 day")
     logger.debug("Starting logging.")
 
-# Host wwwroot from /
-app.mount("/", StaticFiles(directory="wwwroot",
-          html=True), name="Vejret i Galten")
 
 # posting weather data from station. not user endpoint.
 
@@ -162,6 +160,10 @@ async def read_users_me(current_user: data_models.User = Depends(security.get_cu
 async def read_own_items(current_user: data_models.User = Depends(security.get_current_active_user)):
     return [{"item_id": "Foo", "owner": current_user.username}]
 
+
+# Host wwwroot from /
+app.mount("/", StaticFiles(directory="wwwroot",
+          html=True), name="Vejret i Galten")
 
 # Dev mode launcher - not needed for prod
 if __name__ == '__main__':
