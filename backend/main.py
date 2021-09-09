@@ -1,21 +1,22 @@
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import Depends, FastAPI, HTTPException, status, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.staticfiles import StaticFiles
+from starlette.routing import Match
 from sqlmodel import Session, select
-
 from loguru import logger
 
 import requests
 import uvicorn
 from datetime import datetime, timedelta
 from urllib import parse
-
+import sys
 from core import security, data_models, database
 from core.settings import get_settings
 
-
 # instantiate api.
+logger.add(f"./log/apilog_{datetime.now().strftime('%Y-%m-%d')}.log", rotation="1 day",
+           colorize=False, format="{time:YYYY-MM-DD HH:mm:ss.SSS} | {level} | <level>{message}</level>")
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -26,17 +27,26 @@ app.add_middleware(
 )
 
 
-# enable logging on startup
+# add middleware to capture logs
+@app.middleware("http")
+async def log_middle(request: Request, call_next):
+    logger.debug(
+        f" {request.client.host} | {request.method} {request.url}")
+
+    logger.debug("Params:")
+    for name, value in request.path_params.items():
+        logger.debug(f"\t{name}: {value}")
+
+    response = await call_next(request)
+    return response
+
+
 @app.on_event("startup")
 async def startup_event():
-    logger.add(
-        f"./log/apilog_{datetime.now().strftime('%Y-%m-%d')}.log", rotation="1 day")
     logger.debug("Starting logging.")
 
 
 # posting weather data from station. not user endpoint.
-
-
 @app.get("/weatherstation/updateweatherstation.php", status_code=status.HTTP_201_CREATED)
 async def store(ID: str, PASSWORD: str, indoortempf: float, tempf: float, dewptf: float,
                 windchillf: float, indoorhumidity: float, humidity: float, windspeedmph: float,
@@ -152,6 +162,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 # test endpoint1 to be deactivated
 @app.get("/users/me/", response_model=data_models.User, status_code=status.HTTP_200_OK)
 async def read_users_me(current_user: data_models.User = Depends(security.get_current_active_user)):
+    logger.info("getting user: {}",  current_user.username)
     return current_user
 
 

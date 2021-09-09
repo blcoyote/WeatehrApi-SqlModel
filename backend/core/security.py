@@ -15,25 +15,21 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-@logger.catch
 def gen_rand():
     alphabet = string.ascii_letters + string.digits + string.hexdigits + "." + "/"
     return ''.join(secrets.choice(alphabet) for i in range(40))
 
 
-@logger.catch
 def verify_password(plain_password, hashedpassword):
     return pwd_context.verify(plain_password, hashedpassword)
 
 
-@logger.catch
 def get_password_hash(password):
     return pwd_context.hash(password)
 
 # need change to handle postgres
 
 
-@logger.catch
 def get_user(user: data_models.FullUser, username: str):
     if username == user.username:
         return user

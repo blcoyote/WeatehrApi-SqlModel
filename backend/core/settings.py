@@ -1,6 +1,8 @@
 from pydantic import BaseSettings
 from functools import lru_cache
 
+ERROR_LOG_FILENAME = "./log/access.log"
+
 
 class Settings(BaseSettings):
     DEBUG_MODE: bool

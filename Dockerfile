@@ -27,7 +27,7 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 RUN groupadd -g 2000 apiuser && useradd -m -u 2001 -g apiuser apiuser
 
 # transfer project files
-COPY ./weatherApi /app
+COPY ./backend /app
 COPY --from=build /app/build /app/wwwroot
 WORKDIR /app
 

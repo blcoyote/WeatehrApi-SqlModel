@@ -6,7 +6,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "cwd": "weatherApi",
+            "cwd": "backend",
             "name": "Python: FastAPI",
             "type": "python",
             "request": "launch",
