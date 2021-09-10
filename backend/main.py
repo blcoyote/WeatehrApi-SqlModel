@@ -17,6 +17,7 @@ from core.settings import get_settings
 # instantiate api.
 logger.add(f"./log/apilog_{datetime.now().strftime('%Y-%m-%d')}.log", rotation="1 day",
            colorize=False, format="{time:YYYY-MM-DD HH:mm:ss.SSS} | {level} | <level>{message}</level>")
+
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -26,8 +27,9 @@ app.add_middleware(
     allow_headers=['*'],
 )
 
-
 # add middleware to capture logs
+
+
 @app.middleware("http")
 async def log_middle(request: Request, call_next):
     logger.debug(

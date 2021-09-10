@@ -16,7 +16,16 @@ RUN npm run build
 
 
 # Build host image
-FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9
+#FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9
+FROM library/python:3.9.6-slim-buster
+
+EXPOSE 80
+
+# Keeps Python from generating .pyc files in the container
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Turns off buffering for easier container logging
+ENV PYTHONUNBUFFERED=1
 
 # Set up virtual environment
 ENV VIRTUAL_ENV=/opt/venv
@@ -43,8 +52,8 @@ USER apiuser
 EXPOSE 80
 
 # Command to run project
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
-
+CMD ["uvicorn", "--workers", "8", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
+#CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
 
 ## test command: 
 ## docker run -d --name testweatherapi -p 8001:80 weatherapi
