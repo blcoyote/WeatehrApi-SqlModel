@@ -2,7 +2,6 @@ from fastapi import Depends, FastAPI, HTTPException, status, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.staticfiles import StaticFiles
-from starlette.routing import Match
 from sqlmodel import Session, select
 from loguru import logger
 

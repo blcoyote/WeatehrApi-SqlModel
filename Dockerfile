@@ -16,8 +16,7 @@ RUN npm run build
 
 
 # Build host image
-#FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9
-FROM library/python:3.9.6-slim-buster
+FROM tiangolo/uvicorn-gunicorn-fastapi
 
 EXPOSE 80
 
@@ -27,13 +26,14 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # Turns off buffering for easier container logging
 ENV PYTHONUNBUFFERED=1
 
-# Set up virtual environment
-ENV VIRTUAL_ENV=/opt/venv
-RUN python3 -m venv $VIRTUAL_ENV
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-# add user
-RUN groupadd -g 2000 apiuser && useradd -m -u 2001 -g apiuser apiuser
+
+LABEL traefik.http.routers.weather.rule=Host(`weather.elcoyote.dk`)
+LABEL traefik.http.routers.weather.tls=true
+LABEL traefik.http.routers.weather.tls.certresolver=lets-encrypt
+LABEL traefik.port=80
+
+
 
 # transfer project files
 COPY ./backend /app
@@ -41,19 +41,22 @@ COPY --from=build /app/build /app/wwwroot
 WORKDIR /app
 
 # Install dependencies:
-RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 # Change user so we dont run our application as root.
-RUN chown -R apiuser:apiuser /app
-USER apiuser
+# RUN groupadd -g 2000 apiuser &&\ 
+#     useradd -m -u 2001 -g apiuser apiuser &&\
+#     chown -R apiuser:apiuser /app
+# USER apiuser
 
-# expose port 80 and let nginx handle https
-EXPOSE 80
+# RUN useradd -ms /bin/bash apiuser &&\
+#     chown -R apiuser /app
+
+# USER apiuser
+
 
 # Command to run project
-CMD ["uvicorn", "--workers", "8", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
-#CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
 
 ## test command: 
-## docker run -d --name testweatherapi -p 8001:80 weatherapi
+## docker run -d --name testweatherapi -p 8005:80 weatherapi
