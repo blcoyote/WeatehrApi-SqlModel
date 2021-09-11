@@ -117,7 +117,7 @@ async def get_weather(day_delta: int = 1, result_interval: int = 12):
             return results[::result_interval]
     except Exception as ex:
         logger.exception(
-            f"failed weather lookup with day_delta: {day_delta}, result_interval {result_interval}, current_user: {current_user}")
+            f"failed weather lookup with day_delta: {day_delta}, result_interval {result_interval}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Database lookup failed"
