@@ -4,16 +4,15 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.staticfiles import StaticFiles
 from sqlmodel import Session, select
 from loguru import logger
-
 import requests
 import uvicorn
 from datetime import datetime, timedelta
 from urllib import parse
-import sys
 from core import security, data_models, database
 from core.settings import get_settings
 
 # instantiate api.
+logger.remove(0)
 logger.add(f"./log/apilog_{datetime.now().strftime('%Y-%m-%d')}.log", rotation="1 day",
            colorize=False, format="{time:YYYY-MM-DD HH:mm:ss.SSS} | {level} | <level>{message}</level>")
 
@@ -93,7 +92,7 @@ async def store(ID: str, PASSWORD: str, indoortempf: float, tempf: float, dewptf
 # TODO: rework result_interval. Currently slices results and returns every Nth item.
 # To get hourly intervals enter 12 as incoming observersions are stored every 5 minutes.
 @app.get("/weatherstation/getweather", status_code=status.HTTP_200_OK)
-async def get_weather(day_delta: int = 1, result_interval: int = 12, current_user: data_models.User = Depends(security.get_current_active_user)):
+async def get_weather(day_delta: int = 1, result_interval: int = 12):
 
     if (day_delta > 31 or day_delta <= 0):
         raise HTTPException(
