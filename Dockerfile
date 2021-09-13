@@ -44,19 +44,14 @@ WORKDIR /app
 RUN pip install -r requirements.txt
 
 # Change user so we dont run our application as root.
-# RUN groupadd -g 2000 apiuser &&\ 
-#     useradd -m -u 2001 -g apiuser apiuser &&\
-#     chown -R apiuser:apiuser /app
-# USER apiuser
+RUN useradd -ms /bin/bash apiuser &&\
+    chown -R apiuser /app
 
-# RUN useradd -ms /bin/bash apiuser &&\
-#     chown -R apiuser /app
-
-# USER apiuser
+USER apiuser
 
 
 # Command to run project
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
 
 ## test command: 
-## docker run -d --name testweatherapi -p 8005:80 weatherapi
+## docker run -d --name testweatherapi -p 8000:80 weatherapi
