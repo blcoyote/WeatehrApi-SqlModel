@@ -166,12 +166,6 @@ async def read_users_me(current_user: data_models.User = Depends(security.get_cu
     return current_user
 
 
-# test endpoint 2 to be deactivated
-@app.get("/users/me/items/", status_code=status.HTTP_200_OK)
-async def read_own_items(current_user: data_models.User = Depends(security.get_current_active_user)):
-    return [{"item_id": "Foo", "owner": current_user.username}]
-
-
 # Host wwwroot from /
 app.mount("/", StaticFiles(directory="wwwroot",
           html=True), name="Vejret i Galten")
