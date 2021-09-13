@@ -1,7 +1,14 @@
 import logo from './logo.svg';
 import './App.css';
+import GetWeather from './Functions/WeatherRequests.js'
 
 function App() {
+  var url = "https://weather.elcoyote.dk/weatherstation/getweather?day_delta=1&result_interval=12"
+    
+  GetWeather(url, succes, error);
+
+
+
   return (
     <div className="App">
       <header className="App-header">
@@ -20,6 +27,10 @@ function App() {
       </header>
     </div>
   );
+
 }
+function succes (jsonResponse) {console.log(jsonResponse)}
+
+function error (errorResponse) {console.log(errorResponse)}
 
 export default App;
