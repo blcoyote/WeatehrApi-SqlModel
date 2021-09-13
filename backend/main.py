@@ -9,14 +9,15 @@ import uvicorn
 from datetime import datetime, timedelta
 from urllib import parse
 from core import security, data_models, database
-from core.settings import get_settings
+from core.settings import get_settings, VERSION
 
 # instantiate api.
 logger.remove(0)
 logger.add(f"./log/apilog_{datetime.now().strftime('%Y-%m-%d')}.log", rotation="1 day",
            colorize=False, format="{time:YYYY-MM-DD HH:mm:ss.SSS} | {level} | <level>{message}</level>")
 
-app = FastAPI()
+app = FastAPI(title='Weatherstation API',
+              version=VERSION, debug=False)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=['*'],

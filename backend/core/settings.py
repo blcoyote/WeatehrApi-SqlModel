@@ -2,6 +2,7 @@ from pydantic import BaseSettings
 from functools import lru_cache
 
 ERROR_LOG_FILENAME = "./log/access.log"
+VERSION = "0.1.5"
 
 
 class Settings(BaseSettings):
