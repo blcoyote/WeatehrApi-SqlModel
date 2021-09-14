@@ -1,18 +1,15 @@
-import axios from 'axios'
+import axios from "axios";
 
+//simple boilerplate constant that handles basic api requests. This is used multiple places with varying inputs.
+//it takes a configuration object, along with 2 references to funtions that triggers in either success or failure scenarios
 
-function GetWeather(url, successCallback, errorCallback  ) {
-    console.log('test');
-    axios.get(url)
-        .then(response => {
-            console.error('succes');
-            successCallback(response.json())
+export const apiHandler = (config, returnMethod, errorMethod) => {
+    // send payload
+    axios(config)
+        .then((response) => {
+            returnMethod(response);
         })
-        .catch(error => {
-            console.error('There was an error!', error);
-            errorCallback(error);
-
+        .catch((error) => {
+            errorMethod(error);
         });
-}
-
-export default GetWeather;
+};

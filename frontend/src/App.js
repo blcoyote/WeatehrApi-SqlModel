@@ -1,12 +1,9 @@
 import logo from './logo.svg';
 import './App.css';
-import GetWeather from './Functions/WeatherRequests.js'
+import WeatherContainer from './Components/WeatherContainer';
+import settings from './Settings/config'
 
 function App() {
-  var url = "https://weather.elcoyote.dk/weatherstation/getweather?day_delta=1&result_interval=12"
-    
-  GetWeather(url, succes, error);
-
 
 
   return (
@@ -25,12 +22,11 @@ function App() {
           Learn React
         </a>
       </header>
+      <WeatherContainer host={settings.apiHost}></WeatherContainer>
     </div>
   );
 
 }
-function succes (jsonResponse) {console.log(jsonResponse)}
 
-function error (errorResponse) {console.log(errorResponse)}
 
 export default App;
