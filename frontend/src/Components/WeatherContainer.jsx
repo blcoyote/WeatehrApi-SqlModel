@@ -9,6 +9,7 @@ export default class WeatherContainer extends Component {
   state = {
     weatherList: [],
     error: false,
+    loading: false,
   };
 
   // trigger every 60.000 milisecond (1 minute)
@@ -24,6 +25,7 @@ export default class WeatherContainer extends Component {
     clearInterval(this.interval);
   }
 
+  //add loadspinners.
   render() {
     if (this.state.weatherList) {
       // data has been populated, build content. first set in the weatherlist contain latest measurements.
