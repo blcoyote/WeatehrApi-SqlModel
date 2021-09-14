@@ -28,7 +28,7 @@ export default class WeatherContainer extends Component {
   //add loadspinners.
   render() {
     if (this.state.weatherList) {
-      // data has been populated, build content. first set in the weatherlist contain latest measurements.
+      // data has been populated, build content. First set in the weatherlist contain most recent measurement.
       //the rest is used for generating graphs.
       return (
         <Container>
