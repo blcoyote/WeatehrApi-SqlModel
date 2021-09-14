@@ -92,6 +92,7 @@ async def store(ID: str, PASSWORD: str, indoortempf: float, tempf: float, dewptf
 # Returns list of Observation objects based on input criteria.
 # TODO: rework result_interval. Currently slices results and returns every Nth item.
 # To get hourly intervals enter 12 as incoming observersions are stored every 5 minutes.
+# Endpoint is public. Sharing is caring.
 @app.get("/weatherstation/getweather", status_code=status.HTTP_200_OK)
 async def get_weather(day_delta: int = 1, result_interval: int = 12):
 
