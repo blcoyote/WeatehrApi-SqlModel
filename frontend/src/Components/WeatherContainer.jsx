@@ -8,7 +8,7 @@ import Container from "react-bootstrap/Container";
 export default class WeatherContainer extends Component {
   state = {
     weatherList: [],
-    error: Boolean,
+    error: false,
   };
 
   // trigger every 60.000 milisecond (1 minute)
@@ -55,12 +55,12 @@ fetchWeather = () => {
   };
 
   fetchSuccess = (props) => {
-    console.log(props.data);
+    //console.log(props.data);
     this.setState({ weatherList: props.data, Error: false });
     
   };
   fetchError = (props) => {
-    console.log(props);
+    //console.log(props);
     this.setState({ error: true });
   };
 }
