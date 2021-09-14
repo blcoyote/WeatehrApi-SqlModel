@@ -12,7 +12,7 @@ export default class WeatherContainer extends Component {
     loading: false,
   };
 
-  // trigger every 60.000 milisecond (1 minute)
+  // trigger every 60.000 miliseconds (1 minute)
   componentDidMount() {
     this.fetchWeather();
     this.interval = setInterval(() => {
