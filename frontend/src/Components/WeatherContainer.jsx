@@ -37,6 +37,7 @@ export default class WeatherContainer extends Component {
       // placeholder, print latest observation as text.
       const alphaNumOut = Object.keys(this.state.weatherList[0]).map(key => [key, this.state.weatherList[0][key]]);
       console.log(alphaNumOut)
+
       return (
         <Container>
           <br></br>
