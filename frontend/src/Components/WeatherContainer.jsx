@@ -29,7 +29,7 @@ export default class WeatherContainer extends Component {
 
   // add loadspinners.
   // add charts: https://github.com/recharts/recharts
-  // add modular ui elements
+  // add modular ui elements via https://react-bootstrap.github.io/components/cards/
   render() {
     if (this.state.weatherList.length > 0) {
       // data has been populated, build content. First set in the weatherlist contain most recent measurement.
