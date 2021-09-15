@@ -34,12 +34,13 @@ export default class WeatherContainer extends Component {
     if (this.state.weatherList.length > 0) {
       // data has been populated, build content. First set in the weatherlist contain most recent measurement.
       //the rest is used for generating graphs.
-      
       // placeholder, print latest observation as text.
       const alphaNumOut = Object.keys(this.state.weatherList[0]).map(key => [key, this.state.weatherList[0][key]]);
       console.log(alphaNumOut)
       return (
         <Container>
+          <br></br>
+          <br></br>
           <h2>Latest Observations</h2>
           <h5>placeholder data</h5>
           {
