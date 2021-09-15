@@ -33,15 +33,11 @@ class FullUser(User, table=True):
     hashedpassword: str
 
 
-# Opservation class is used for both storage and retrieval operations.
-class Observation(SQLModel, table=True):
-    __tablename__ = "Observations"
-    id: Optional[int] = Field(default=None, primary_key=True)
-    indoortempf: float
+# Observation class is used for both storage and retrieval operations.
+class ObservationLite(SQLModel, table=False):
     tempf: float
     dewptf: float
     windchillf: float
-    indoorhumidity: float
     humidity: float
     windspeedmph: float
     windgustmph: float
@@ -55,5 +51,12 @@ class Observation(SQLModel, table=True):
     solarradiation: float
     UV: int
     dateutc: datetime
+
+
+class Observation(ObservationLite, table=True):
+    __tablename__ = "Observations"
+    id: Optional[int] = Field(default=None, primary_key=True)
+    indoortempf: float
+    indoorhumidity: float
     realtime: int
     rtfreq: int
