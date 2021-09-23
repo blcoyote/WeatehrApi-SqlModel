@@ -18,7 +18,7 @@ RUN npm run build
 # Build host image
 FROM tiangolo/uvicorn-gunicorn-fastapi
 
-EXPOSE 80
+EXPOSE 8000
 
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -31,7 +31,7 @@ ENV PYTHONUNBUFFERED=1
 LABEL traefik.http.routers.weather.rule=Host(`weather.elcoyote.dk`)
 LABEL traefik.http.routers.weather.tls=true
 LABEL traefik.http.routers.weather.tls.certresolver=lets-encrypt
-LABEL traefik.port=80
+LABEL traefik.port=8000
 
 
 
@@ -51,7 +51,7 @@ USER apiuser
 
 
 # Command to run project
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 
 ## test command: 
 ## docker run -d --name testweatherapi -p 8000:80 weatherapi
