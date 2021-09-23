@@ -31,7 +31,7 @@ ENV PYTHONUNBUFFERED=1
 LABEL traefik.http.routers.weather.rule=Host(`weather.elcoyote.dk`)
 LABEL traefik.http.routers.weather.tls=true
 LABEL traefik.http.routers.weather.tls.certresolver=lets-encrypt
-LABEL traefik.port=8000
+LABEL traefik.port=80
 
 
 
