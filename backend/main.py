@@ -173,5 +173,5 @@ app.mount("/", StaticFiles(directory="wwwroot",
           html=True), name="Vejret i Galten")
 
 # Dev mode launcher - not needed for prod
-if __name__ == '__main__':
-    uvicorn.run(app)
+# if __name__ == '__main__':
+#    uvicorn.run(app)

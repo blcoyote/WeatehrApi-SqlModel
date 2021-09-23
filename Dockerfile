@@ -18,7 +18,7 @@ RUN npm run build
 # Build host image
 FROM tiangolo/uvicorn-gunicorn-fastapi
 
-EXPOSE 8000
+EXPOSE 80
 
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -51,7 +51,7 @@ USER apiuser
 
 
 # Command to run project
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+#CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
 
 ## test command: 
 ## docker run -d --name testweatherapi -p 8000:80 weatherapi
