@@ -14,8 +14,9 @@ export default class WeatherContainer extends Component {
     loading: false,
   };
 
-  // trigger every 300.000 miliseconds (50 minutes)
+  // trigger every 300.000 miliseconds (5 minutes)
   componentDidMount() {
+    
     this.fetchWeather();
     this.interval = setInterval(() => {
       this.fetchWeather();
@@ -35,8 +36,12 @@ export default class WeatherContainer extends Component {
       // data has been populated, build content. First set in the weatherlist contain most recent measurement.
       //the rest is used for generating graphs.
       // placeholder, print latest observation as text.
-      const alphaNumOut = Object.keys(this.state.weatherList[0]).map(key => [key, this.state.weatherList[0][key]]);
-      console.log(alphaNumOut)
+      const weatherArray = Object.keys(this.state.weatherList[0]).filter(key => this.filterKeys(key)).map(key => [key, this.state.weatherList[0][key]]);
+      
+      // TODO:
+      // function to convert contents such as winddirection from degrees to compass system and imperial to metric
+      // unknown if it should be done before or after assigning to weatherArray
+
 
       return (
         <Container>
@@ -45,7 +50,7 @@ export default class WeatherContainer extends Component {
           <h2>Latest Observations</h2>
           <h5>placeholder data</h5>
           {
-            alphaNumOut.map((key)=> (
+            weatherArray.map((key)=> (
             <Row key={key[0]} className="justify-content-md-center">
               <Col xs lg=""> </Col>
               <Col  md="auto"><b>{key[0]}:</b> {key[1]}  </Col>
@@ -59,7 +64,12 @@ export default class WeatherContainer extends Component {
     else return <div></div>;
   }
 
-
+filterKeys  = (key) => {
+  //don't map keys beginning with 'indoor'
+  if (!key.startsWith("indoor") && key !== "id" ) {
+    return key
+  }
+}
 //query api for status
 fetchWeather = () => {
     var configuration = {
@@ -87,3 +97,4 @@ fetchWeather = () => {
     this.setState({ error: true });
   };
 }
+
