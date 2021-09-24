@@ -66,7 +66,7 @@ export default class WeatherContainer extends Component {
 
 filterKeys  = (key) => {
   //don't map keys beginning with 'indoor'
-  if (!key.startsWith("indoor")) {
+  if (!key.startsWith("indoor") && key !== "id" ) {
     return key
   }
 }
