@@ -47,8 +47,8 @@ export default class WeatherContainer extends Component {
         <Container>
           <br></br>
           <br></br>
-          <h2>Latest Observations</h2>
-          <h5>placeholder data</h5>
+          <h2>Seneste målinger</h2>
+          <h5>Placeholder data, opdateret løbende.</h5>
           {
             weatherArray.map((key)=> (
             <Row key={key[0]} className="justify-content-md-center">

@@ -18,10 +18,8 @@ RUN npm run build
 # Build host image
 FROM tiangolo/uvicorn-gunicorn-fastapi
 
-
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
-
 # Turns off buffering for easier container logging
 ENV PYTHONUNBUFFERED=1
 
@@ -29,10 +27,8 @@ ENV PYTHONUNBUFFERED=1
 LABEL traefik.http.routers.weather.rule=Host(`weather.elcoyote.dk`)
 LABEL traefik.http.routers.weather.tls=true
 LABEL traefik.http.routers.weather.tls.certresolver=lets-encrypt
-
-LABEL traefik.port=8080
-
-
+#LABEL traefik.port=8000
+LABEL traefik.http.services.weather.loadbalancer.server.port=8000
 
 # transfer project files
 COPY ./backend /app
@@ -43,14 +39,16 @@ WORKDIR /app
 RUN pip install -r requirements.txt
 
 # Change user so we dont run our application as root.
-RUN useradd -ms /bin/bash apiuser &&\
-    chown -R apiuser /app
+RUN groupadd -r api &&\
+    useradd -ms /bin/bash apiuser -g api &&\
+    chown -R apiuser:api /app &&\
+    chmod -R 755 /app
 USER apiuser
 
 # Tell gunicorn to use port 8080 instead of 80, since host 80 is occupied'
 #ENV BIND="0.0.0.0:8080"
-ENV PORT="8080"
-
+ENV PORT="8000"
+EXPOSE 8000
 # Command to run in a container - only use if base image is anything other than tiangolo/uvicorn-gunicorn-fastapi (eg python:3.9-slim), 
 # but we prefer gunicorn for automated workers and ressource management
 # CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
