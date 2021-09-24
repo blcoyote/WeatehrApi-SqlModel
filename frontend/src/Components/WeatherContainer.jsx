@@ -35,7 +35,7 @@ export default class WeatherContainer extends Component {
       // data has been populated, build content. First set in the weatherlist contain most recent measurement.
       //the rest is used for generating graphs.
       // placeholder, print latest observation as text.
-      const alphaNumOut = Object.keys(this.state.weatherList[0]).map(key => [key, this.state.weatherList[0][key]]);
+      const alphaNumOut = Object.keys(this.state.weatherList[0]).filter(key => this.filterKeys(key)).map(key => [key, this.state.weatherList[0][key]]);
       console.log(alphaNumOut)
 
       return (
@@ -59,7 +59,12 @@ export default class WeatherContainer extends Component {
     else return <div></div>;
   }
 
-
+filterKeys  = (key) => {
+  //don't map keys beginning with 'indoor'
+  if (!key.startsWith("indoor")) {
+    return key
+  }
+}
 //query api for status
 fetchWeather = () => {
     var configuration = {
@@ -87,3 +92,4 @@ fetchWeather = () => {
     this.setState({ error: true });
   };
 }
+
