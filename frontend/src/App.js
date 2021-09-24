@@ -1,17 +1,21 @@
 import './App.css';
 import WeatherContainer from './Components/WeatherContainer';
 import settings from './Settings/config';
+import React, { Component } from 'react';
 
+class App extends Component {
 
-function App() {
+  componentDidMount() {
+    document.title = "Vejret i Galten"
+  }
 
-  // 
-  return (
-    <div className="App">
-      <WeatherContainer host={settings.apiHost}></WeatherContainer>
-    </div>
-  );
+  render() {
+    return (
+      <div className="App">
+        <WeatherContainer host={settings.apiHost}></WeatherContainer>
+      </div>
+    );
+  }
 }
-
 
 export default App;
