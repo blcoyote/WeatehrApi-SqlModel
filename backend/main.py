@@ -47,7 +47,12 @@ async def startup_event():
     logger.debug("Starting logging.")
 
 
+@app.get("/weatherstation/updateweatherstation.phptest", status_code=status.HTTP_201_CREATED)
+async def storetest(observation: data_models.Observation = Depends(data_models.create_observation)):
+    logger.debug(observation)
 # posting weather data from station. not user endpoint.
+
+
 @app.get("/weatherstation/updateweatherstation.php", status_code=status.HTTP_201_CREATED)
 async def store(ID: str, PASSWORD: str, indoortempf: float, tempf: float, dewptf: float,
                 windchillf: float, indoorhumidity: float, humidity: float, windspeedmph: float,
@@ -173,5 +178,5 @@ app.mount("/", StaticFiles(directory="wwwroot",
           html=True), name="Vejret i Galten")
 
 # Dev mode launcher - not needed for prod
-# if __name__ == '__main__':
-#    uvicorn.run(app)
+if __name__ == '__main__':
+    uvicorn.run(app)

@@ -57,3 +57,11 @@ class Observation(SQLModel, table=True):
     dateutc: datetime
     realtime: int
     rtfreq: int
+
+
+def create_observation(ID: str, PASSWORD: str, indoortempf: float, tempf: float, dewptf: float,
+                       windchillf: float, indoorhumidity: float, humidity: float, windspeedmph: float,
+                       windgustmph: float, winddir: int, absbaromin: float, baromin: float, rainin: float,
+                       dailyrainin: float, weeklyrainin: float, monthlyrainin: float, solarradiation: float,
+                       UV: int, dateutc: str, softwaretype: str, action: str, realtime: int, rtfreq: int):
+    return Observation(**locals())
