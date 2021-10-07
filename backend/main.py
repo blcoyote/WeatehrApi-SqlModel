@@ -6,6 +6,7 @@ from pydantic.tools import parse_obj_as
 from sqlmodel import Session, select
 from loguru import logger
 import requests
+from starlette.types import Message
 import uvicorn
 from datetime import datetime, timedelta
 from urllib import parse
@@ -55,20 +56,23 @@ async def startup_event():
 @app.get("/weatherstation/updateweatherstation.php", status_code=status.HTTP_201_CREATED)
 async def store(PASSWORD: str, observation: data_models.Observation = Depends(data_models.create_observation)):
     if PASSWORD == get_settings().ACCESSCTL:
-        try:
-            with Session(database.engine) as session:
-                session.add(observation)
-                session.commit()
-        except Exception as ex:
-            logger.exception("Problem saving observation to database", ex)
+
         try:
             if get_settings().WINDY_ENABLED:
                 url = "https://stations.windy.com/pws/update/%s?winddir=%s&windspeedmph=%s&windgustmph=%s&tempf=%s&rainin=%s&baromin=%s&dewptf=%s&humidity=%s&dateutc=%s" % (
                     parse.quote_plus(get_settings().WINDYKEY), observation.winddir, observation.windspeedmph, observation.windgustmph, observation.tempf, observation.rainin, observation.baromin, observation.dewptf, observation.humidity, observation.dateutc)
                 requests.get(url)
-
         except Exception as ex:
             logger.exception(f"Error pushing data to windy", ex)
+
+        try:
+            with Session(database.engine) as session:
+                session.add(observation)
+                session.commit()
+        except Exception as ex:
+            logger.exception("Error saving observation to database", ex)
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return
     else:
         raise HTTPException(
