@@ -64,7 +64,7 @@ export default class WeatherContainer extends Component {
               {" "}
             </Col>
             <Col md="auto">
-              <h5>Placeholder, seneste data opdateres løbende.</h5>
+              <h5>Placeholder side, data opdateres med 5 min interval.</h5>
             </Col>
             <Col xs lg="">
               {" "}
@@ -77,7 +77,7 @@ export default class WeatherContainer extends Component {
                 {" "}
               </Col>
               <Col md="auto">
-                <b>{key[0]}:</b> {key[1]}{" "}
+                <b>{this.keyprinter(key[0])}:</b> {key[1]}{" "}
               </Col>
               <Col xs lg="">
                 {" "}
@@ -97,6 +97,42 @@ export default class WeatherContainer extends Component {
       return key;
     }
   };
+
+  keyprinter = (key) => {
+    switch (key) {
+      case "tempf":
+        return "temperatur";
+      case "dewptf":
+        return "dugpunkt";
+      case "windchillf":
+        return "windchill";
+      case "humidity":
+        return "luftfugtighed";
+      case "windspeedmph":
+        return "vindhastighed";
+      case "windgustmph":
+        return "vindstød";
+      case "winddir":
+        return "vindretning";
+      case "absbaromin":
+        return "abslufttryk";
+      case "baromin":
+        return "lufttryk";
+      case "rainin":
+        return "regn";
+      case "dailyrainin":
+        return "daglig regn";
+      case "weeklyrainin":
+        return "ugentlig regn";
+      case "monthlyrainin":
+        return "månedlig regn";
+      case "solarradiation":
+        return "solstråling";
+      default:
+        return key;
+    }
+  };
+
   //query api for status
   fetchWeather = () => {
     var configuration = {
