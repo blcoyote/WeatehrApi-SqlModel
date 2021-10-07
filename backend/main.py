@@ -146,7 +146,7 @@ async def get_weather(day_delta: int = 1, result_interval: int = 12, imperial: O
             results = session.exec(statement).all()
             # convert to metric via inheritance with validator decorators.
             # Don't return response_model as Metric_Observation as conversions will otherwise be applied twice as its passing through the application stack
-            if imperial:
+            if imperial:  # switch between imperial and metric measurements. Imperial is standard form the source.
                 return results[::result_interval]
             else:
                 metric_results = parse_obj_as(
