@@ -144,7 +144,8 @@ async def get_weather(day_delta: int = 1, result_interval: int = 12):
                                        ).order_by(data_models.Observation.id.desc())
 
             results = session.exec(statement).all()
-            # convert to metric via inheritance with validator decorators
+            # convert to metric via inheritance with validator decorators.
+            # Don't return response_model as Metric_Observation as conversions will otherwise be applied twice as its passing through the application stack
             metric_results = parse_obj_as(
                 List[data_models.Metric_Observation], results[::result_interval])
             return metric_results
@@ -157,7 +158,7 @@ async def get_weather(day_delta: int = 1, result_interval: int = 12):
         )
 
 
-# Login endpoint
+# Login endpoint, returns a token.
 @app.post("/token", response_model=data_models.Token, status_code=status.HTTP_202_ACCEPTED)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
 
@@ -199,7 +200,7 @@ async def read_users_me(current_user: data_models.User = Depends(security.get_cu
     return current_user
 
 
-# Host wwwroot from /
+# Host wwwroot folder from /
 app.mount("/", StaticFiles(directory="wwwroot",
           html=True), name="Vejret i Galten")
 

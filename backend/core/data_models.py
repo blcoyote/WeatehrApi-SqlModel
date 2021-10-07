@@ -75,10 +75,16 @@ class Metric_Observation(Observation):
         v = v*0.44704
         return round(v, 2)
 
-    @validator('absbaromin', 'baromin', 'rainin', 'dailyrainin', 'weeklyrainin', 'monthlyrainin', allow_reuse=True)
-    def convertin(cls, v: float):
+    @validator('absbaromin', 'baromin', allow_reuse=True)
+    def converthpa(cls, v: float):
         # convert to hPa
         v = v * 33.86
+        return round(v, 2)
+
+    @validator('rainin', 'dailyrainin', 'weeklyrainin', 'monthlyrainin', allow_reuse=True)
+    def convertin(cls, v: float):
+        # convert to hPa
+        v = v * 25.4
         return round(v, 2)
 
 
