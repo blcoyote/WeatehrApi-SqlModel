@@ -53,7 +53,7 @@ async def startup_event():
 # new function to reduce boilerplate on get request with large amount of params (why are professional companies creating devices that tranfer data in get requests...)
 # parameters are mapped to an Observation model in Depends
 @app.get("/weatherstation/updateweatherstation.php", status_code=status.HTTP_201_CREATED)
-async def storetest(PASSWORD: str, observation: data_models.Observation = Depends(data_models.create_observation)):
+async def store(PASSWORD: str, observation: data_models.Observation = Depends(data_models.create_observation)):
     if PASSWORD == get_settings().ACCESSCTL:
         try:
             with Session(database.engine) as session:

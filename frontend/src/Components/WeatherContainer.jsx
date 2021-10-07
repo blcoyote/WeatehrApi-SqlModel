@@ -3,7 +3,7 @@ import { apiHandler } from "../Functions/WeatherRequests";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import 'bootstrap/dist/css/bootstrap.css';
+import "bootstrap/dist/css/bootstrap.css";
 
 // this class should contain logic to render statuscards based on reply from api /status
 // and render the lastest modified jobs wrapped in status cards.
@@ -16,7 +16,6 @@ export default class WeatherContainer extends Component {
 
   // trigger every 300.000 miliseconds (5 minutes)
   componentDidMount() {
-    
     this.fetchWeather();
     this.interval = setInterval(() => {
       this.fetchWeather();
@@ -36,27 +35,33 @@ export default class WeatherContainer extends Component {
       // data has been populated, build content. First set in the weatherlist contain most recent measurement.
       //the rest is used for generating graphs.
       // placeholder, print latest observation as text.
-      const weatherArray = Object.keys(this.state.weatherList[0]).filter(key => this.filterKeys(key)).map(key => [key, this.state.weatherList[0][key]]);
-      
+      const weatherArray = Object.keys(this.state.weatherList[0])
+        .filter((key) => this.filterKeys(key))
+        .map((key) => [key, this.state.weatherList[0][key]]);
+
       // TODO:
       // function to convert contents such as winddirection from degrees to compass system and imperial to metric
       // unknown if it should be done before or after assigning to weatherArray
-
 
       return (
         <Container>
           <br></br>
           <br></br>
           <h2>Seneste målinger</h2>
-          <h5>Placeholder data, opdateret løbende.</h5>
-          {
-            weatherArray.map((key)=> (
+          <h5>Placeholder, seneste data opdateres løbende.</h5>
+          {weatherArray.map((key) => (
             <Row key={key[0]} className="justify-content-md-center">
-              <Col xs lg=""> </Col>
-              <Col  md="auto"><b>{key[0]}:</b> {key[1]}  </Col>
-              <Col xs lg=""> </Col>
-            </Row>))
-          }
+              <Col xs lg="">
+                {" "}
+              </Col>
+              <Col md="auto">
+                <b>{key[0]}:</b> {key[1]}{" "}
+              </Col>
+              <Col xs lg="">
+                {" "}
+              </Col>
+            </Row>
+          ))}
         </Container>
       );
     }
@@ -64,19 +69,21 @@ export default class WeatherContainer extends Component {
     else return <div></div>;
   }
 
-filterKeys  = (key) => {
-  //don't map keys beginning with 'indoor'
-  if (!key.startsWith("indoor") && key !== "id" ) {
-    return key
-  }
-}
-//query api for status
-fetchWeather = () => {
+  filterKeys = (key) => {
+    //don't map keys beginning with 'indoor'
+    if (!key.startsWith("indoor") && key !== "id") {
+      return key;
+    }
+  };
+  //query api for status
+  fetchWeather = () => {
     var configuration = {
       method: "get",
       // day_delta is number of days to pull. result interval returns every Nth record. 12 = 1 record pr hour as records are 5 minute intervals
       // daydelta 1 and interval 12 returns 24 hours of records, with one record pr hour
-      url: this.props.host + "/weatherstation/getweather?day_delta=1&result_interval=12",
+      url:
+        this.props.host +
+        "/weatherstation/getweather?day_delta=1&result_interval=12",
       headers: {
         //token: this.props.token,
         Accept: "application/json",
@@ -90,11 +97,9 @@ fetchWeather = () => {
   fetchSuccess = (props) => {
     //console.log(props.data);
     this.setState({ weatherList: props.data, Error: false });
-    
   };
   fetchError = (props) => {
     //console.log(props);
     this.setState({ error: true });
   };
 }
-
