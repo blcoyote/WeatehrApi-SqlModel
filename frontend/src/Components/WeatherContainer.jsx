@@ -48,7 +48,7 @@ export default class WeatherContainer extends Component {
           <br></br>
           <br></br>
           <h2>Seneste målinger</h2>
-          <h5>Placeholder side, data opdateres med 5 min interval.</h5>
+          <h5>Placeholder side, data opdateres med 5 min. interval.</h5>
           {weatherArray.map((key) => (
             <Row
               key={this.keyprinter(key[0])}

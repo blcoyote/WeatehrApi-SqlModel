@@ -64,7 +64,7 @@ export default class WeatherContainer extends Component {
               {" "}
             </Col>
             <Col md="auto">
-              <h5>Placeholder side, data opdateres med 5 min interval.</h5>
+              <h5>Placeholder side, data opdateres med 5 min. interval.</h5>
             </Col>
             <Col xs lg="">
               {" "}
