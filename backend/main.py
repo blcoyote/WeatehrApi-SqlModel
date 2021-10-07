@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 from urllib import parse
 from core import security, data_models, database
 from core.settings import get_settings, VERSION
-from typing import List
+from typing import List, Optional
 
 # instantiate api.
 logger.remove(0)
@@ -60,7 +60,7 @@ async def storetest(PASSWORD: str, observation: data_models.Observation = Depend
                 session.add(observation)
                 session.commit()
         except Exception as ex:
-            logger.exception("Problem saving observation to database")
+            logger.exception("Problem saving observation to database", ex)
         try:
             if get_settings().WINDY_ENABLED:
                 url = "https://stations.windy.com/pws/update/%s?winddir=%s&windspeedmph=%s&windgustmph=%s&tempf=%s&rainin=%s&baromin=%s&dewptf=%s&humidity=%s&dateutc=%s" % (
@@ -68,7 +68,7 @@ async def storetest(PASSWORD: str, observation: data_models.Observation = Depend
                 requests.get(url)
 
         except Exception as ex:
-            logger.exception(f"Error pushing data to windy")
+            logger.exception(f"Error pushing data to windy", ex)
         return
     else:
         raise HTTPException(
@@ -122,7 +122,7 @@ async def storetest(PASSWORD: str, observation: data_models.Observation = Depend
 # To get hourly intervals enter 12 as incoming observersions are stored every 5 minutes.
 # Endpoint is public. Sharing is caring.
 @app.get("/weatherstation/getweather", status_code=status.HTTP_200_OK, response_model=List[data_models.Observation])
-async def get_weather(day_delta: int = 1, result_interval: int = 12):
+async def get_weather(day_delta: int = 1, result_interval: int = 12, imperial: Optional[bool] = False):
 
     if (day_delta > 31 or day_delta <= 0):
         raise HTTPException(
@@ -146,9 +146,12 @@ async def get_weather(day_delta: int = 1, result_interval: int = 12):
             results = session.exec(statement).all()
             # convert to metric via inheritance with validator decorators.
             # Don't return response_model as Metric_Observation as conversions will otherwise be applied twice as its passing through the application stack
-            metric_results = parse_obj_as(
-                List[data_models.Metric_Observation], results[::result_interval])
-            return metric_results
+            if imperial:
+                return results[::result_interval]
+            else:
+                metric_results = parse_obj_as(
+                    List[data_models.Metric_Observation], results[::result_interval])
+                return metric_results
     except Exception as ex:
         logger.exception(
             f"failed weather lookup with day_delta: {day_delta}, result_interval {result_interval}", ex)
