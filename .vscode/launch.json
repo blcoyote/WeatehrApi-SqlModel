@@ -6,7 +6,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "cwd": "backend",
+            "cwd": "${fileDirname}",
             "name": "Python: FastAPI",
             "type": "python",
             "request": "launch",

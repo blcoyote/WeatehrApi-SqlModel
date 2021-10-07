@@ -2,6 +2,7 @@ from fastapi import Depends, FastAPI, HTTPException, status, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.staticfiles import StaticFiles
+from pydantic.tools import parse_obj_as
 from sqlmodel import Session, select
 from loguru import logger
 import requests
@@ -10,6 +11,7 @@ from datetime import datetime, timedelta
 from urllib import parse
 from core import security, data_models, database
 from core.settings import get_settings, VERSION
+from typing import List
 
 # instantiate api.
 logger.remove(0)
@@ -47,58 +49,79 @@ async def startup_event():
     logger.debug("Starting logging.")
 
 
-@app.get("/weatherstation/updateweatherstation.phptest", status_code=status.HTTP_201_CREATED)
-async def storetest(observation: data_models.Observation = Depends(data_models.create_observation)):
-    logger.debug(observation)
-# posting weather data from station. not user endpoint.
-
-
+# Posting weather data from station. not user endpoint.
+# new function to reduce boilerplate on get request with large amount of params (why are professional companies creating devices that tranfer data in get requests...)
+# parameters are mapped to an Observation model in Depends
 @app.get("/weatherstation/updateweatherstation.php", status_code=status.HTTP_201_CREATED)
-async def store(ID: str, PASSWORD: str, indoortempf: float, tempf: float, dewptf: float,
-                windchillf: float, indoorhumidity: float, humidity: float, windspeedmph: float,
-                windgustmph: float, winddir: int, absbaromin: float, baromin: float, rainin: float,
-                dailyrainin: float, weeklyrainin: float, monthlyrainin: float, solarradiation: float,
-                UV: int, dateutc: str, softwaretype: str, action: str, realtime: int, rtfreq: int):
-
+async def storetest(PASSWORD: str, observation: data_models.Observation = Depends(data_models.create_observation)):
     if PASSWORD == get_settings().ACCESSCTL:
-        # map request to model
-        observation = data_models.Observation(
-            indoortempf=indoortempf, tempf=tempf, dewptf=dewptf, windchillf=windchillf,
-            indoorhumidity=indoorhumidity, humidity=humidity, windspeedmph=windspeedmph,
-            windgustmph=windgustmph, winddir=winddir, absbaromin=absbaromin, baromin=baromin,
-            rainin=rainin, dailyrainin=dailyrainin, weeklyrainin=weeklyrainin, monthlyrainin=monthlyrainin,
-            solarradiation=solarradiation, UV=UV, dateutc=dateutc, realtime=realtime, rtfreq=rtfreq)
-
         try:
             with Session(database.engine) as session:
                 session.add(observation)
                 session.commit()
         except Exception as ex:
             logger.exception("Problem saving observation to database")
-
         try:
             if get_settings().WINDY_ENABLED:
-
                 url = "https://stations.windy.com/pws/update/%s?winddir=%s&windspeedmph=%s&windgustmph=%s&tempf=%s&rainin=%s&baromin=%s&dewptf=%s&humidity=%s&dateutc=%s" % (
-                    parse.quote_plus(get_settings().WINDYKEY), winddir, windspeedmph, windgustmph, tempf, rainin, baromin, dewptf, humidity, dateutc)
+                    parse.quote_plus(get_settings().WINDYKEY), observation.winddir, observation.windspeedmph, observation.windgustmph, observation.tempf, observation.rainin, observation.baromin, observation.dewptf, observation.humidity, observation.dateutc)
                 requests.get(url)
 
         except Exception as ex:
             logger.exception(f"Error pushing data to windy")
-
         return
-
     else:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED
         )
+
+# # BACKUP posting weather data from station. not user endpoint. BACKUP
+# @app.get("/weatherstation/updateweatherstation.php", status_code=status.HTTP_201_CREATED)
+# async def store(ID: str, PASSWORD: str, indoortempf: float, tempf: float, dewptf: float,
+#                 windchillf: float, indoorhumidity: float, humidity: float, windspeedmph: float,
+#                 windgustmph: float, winddir: int, absbaromin: float, baromin: float, rainin: float,
+#                 dailyrainin: float, weeklyrainin: float, monthlyrainin: float, solarradiation: float,
+#                 UV: int, dateutc: str, softwaretype: str, action: str, realtime: int, rtfreq: int):
+
+#     if PASSWORD == get_settings().ACCESSCTL:
+#         # map request to model
+#         observation = data_models.Observation(
+#             indoortempf=indoortempf, tempf=tempf, dewptf=dewptf, windchillf=windchillf,
+#             indoorhumidity=indoorhumidity, humidity=humidity, windspeedmph=windspeedmph,
+#             windgustmph=windgustmph, winddir=winddir, absbaromin=absbaromin, baromin=baromin,
+#             rainin=rainin, dailyrainin=dailyrainin, weeklyrainin=weeklyrainin, monthlyrainin=monthlyrainin,
+#             solarradiation=solarradiation, UV=UV, dateutc=dateutc, realtime=realtime, rtfreq=rtfreq)
+
+#         try:
+#             with Session(database.engine) as session:
+#                 session.add(observation)
+#                 session.commit()
+#         except Exception as ex:
+#             logger.exception("Problem saving observation to database")
+
+#         try:
+#             if get_settings().WINDY_ENABLED:
+
+#                 url = "https://stations.windy.com/pws/update/%s?winddir=%s&windspeedmph=%s&windgustmph=%s&tempf=%s&rainin=%s&baromin=%s&dewptf=%s&humidity=%s&dateutc=%s" % (
+#                     parse.quote_plus(get_settings().WINDYKEY), winddir, windspeedmph, windgustmph, tempf, rainin, baromin, dewptf, humidity, dateutc)
+#                 requests.get(url)
+
+#         except Exception as ex:
+#             logger.exception(f"Error pushing data to windy")
+
+#         return
+
+#     else:
+#         raise HTTPException(
+#             status_code=status.HTTP_401_UNAUTHORIZED
+#         )
 
 
 # Returns list of Observation objects based on input criteria.
 # TODO: rework result_interval. Currently slices results and returns every Nth item.
 # To get hourly intervals enter 12 as incoming observersions are stored every 5 minutes.
 # Endpoint is public. Sharing is caring.
-@app.get("/weatherstation/getweather", status_code=status.HTTP_200_OK)
+@app.get("/weatherstation/getweather", status_code=status.HTTP_200_OK, response_model=List[data_models.Observation])
 async def get_weather(day_delta: int = 1, result_interval: int = 12):
 
     if (day_delta > 31 or day_delta <= 0):
@@ -121,10 +144,13 @@ async def get_weather(day_delta: int = 1, result_interval: int = 12):
                                        ).order_by(data_models.Observation.id.desc())
 
             results = session.exec(statement).all()
-            return results[::result_interval]
+            # convert to metric via inheritance with validator decorators
+            metric_results = parse_obj_as(
+                List[data_models.Metric_Observation], results[::result_interval])
+            return metric_results
     except Exception as ex:
         logger.exception(
-            f"failed weather lookup with day_delta: {day_delta}, result_interval {result_interval}")
+            f"failed weather lookup with day_delta: {day_delta}, result_interval {result_interval}", ex)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Database lookup failed"
