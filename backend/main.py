@@ -79,47 +79,6 @@ async def store(PASSWORD: str, observation: data_models.Observation = Depends(da
             status_code=status.HTTP_401_UNAUTHORIZED
         )
 
-# # BACKUP posting weather data from station. not user endpoint. BACKUP
-# @app.get("/weatherstation/updateweatherstation.php", status_code=status.HTTP_201_CREATED)
-# async def store(ID: str, PASSWORD: str, indoortempf: float, tempf: float, dewptf: float,
-#                 windchillf: float, indoorhumidity: float, humidity: float, windspeedmph: float,
-#                 windgustmph: float, winddir: int, absbaromin: float, baromin: float, rainin: float,
-#                 dailyrainin: float, weeklyrainin: float, monthlyrainin: float, solarradiation: float,
-#                 UV: int, dateutc: str, softwaretype: str, action: str, realtime: int, rtfreq: int):
-
-#     if PASSWORD == get_settings().ACCESSCTL:
-#         # map request to model
-#         observation = data_models.Observation(
-#             indoortempf=indoortempf, tempf=tempf, dewptf=dewptf, windchillf=windchillf,
-#             indoorhumidity=indoorhumidity, humidity=humidity, windspeedmph=windspeedmph,
-#             windgustmph=windgustmph, winddir=winddir, absbaromin=absbaromin, baromin=baromin,
-#             rainin=rainin, dailyrainin=dailyrainin, weeklyrainin=weeklyrainin, monthlyrainin=monthlyrainin,
-#             solarradiation=solarradiation, UV=UV, dateutc=dateutc, realtime=realtime, rtfreq=rtfreq)
-
-#         try:
-#             with Session(database.engine) as session:
-#                 session.add(observation)
-#                 session.commit()
-#         except Exception as ex:
-#             logger.exception("Problem saving observation to database")
-
-#         try:
-#             if get_settings().WINDY_ENABLED:
-
-#                 url = "https://stations.windy.com/pws/update/%s?winddir=%s&windspeedmph=%s&windgustmph=%s&tempf=%s&rainin=%s&baromin=%s&dewptf=%s&humidity=%s&dateutc=%s" % (
-#                     parse.quote_plus(get_settings().WINDYKEY), winddir, windspeedmph, windgustmph, tempf, rainin, baromin, dewptf, humidity, dateutc)
-#                 requests.get(url)
-
-#         except Exception as ex:
-#             logger.exception(f"Error pushing data to windy")
-
-#         return
-
-#     else:
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED
-#         )
-
 
 # Returns list of Observation objects based on input criteria.
 # TODO: rework result_interval. Currently slices results and returns every Nth item.
@@ -159,6 +118,35 @@ async def get_weather(day_delta: int = 1, result_interval: int = 12, imperial: O
     except Exception as ex:
         logger.exception(
             f"failed weather lookup with day_delta: {day_delta}, result_interval {result_interval}", ex)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Database lookup failed"
+        )
+
+
+@app.get("/weatherstation/getlatest", status_code=status.HTTP_200_OK, response_model=data_models.Observation)
+async def get_latest(imperial: Optional[bool] = False):
+
+    try:
+        with Session(database.engine) as session:
+            statement = select(data_models.Observation
+                               ).order_by(data_models.Observation.id.desc()
+                                          ).first()
+
+            result = session.exec(statement).one()
+
+            # convert to metric via inheritance with validator decorators.
+            # Don't return response_model as Metric_Observation as conversions will otherwise be applied twice as its passing through the application stack
+            if imperial:  # switch between imperial and metric measurements. Imperial is standard form the source.
+                return result
+            else:
+                metric_results = parse_obj_as(
+                    data_models.Metric_Observation, result)
+                return metric_results
+
+    except Exception as ex:
+        logger.exception(
+            f"failed weather lookup", ex)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Database lookup failed"

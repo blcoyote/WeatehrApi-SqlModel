@@ -44,9 +44,6 @@ export default class WeatherContainer extends Component {
 
       return (
         <Container>
-          <br></br>
-          <br></br>
-
           <Row className="justify-content-md-center">
             <Col xs lg="">
               {" "}
