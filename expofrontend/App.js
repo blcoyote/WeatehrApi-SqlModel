@@ -17,6 +17,7 @@ export default function App() {
       <br />
       <View style={styles.container}>
         <Tabs
+          variant="tabs"
           defaultActiveKey="home"
           id="uncontrolled-tab-example"
           className="mb-3"
@@ -25,7 +26,7 @@ export default function App() {
             <WeatherContainer host={settings.apiHost}></WeatherContainer>
           </Tab>
 
-          <Tab eventKey="historik" title="Historik">
+          <Tab eventKey="history" title="Historik">
             Grafter!!!
           </Tab>
           <Tab eventKey="privacy" title="Privatlivs Politik">
