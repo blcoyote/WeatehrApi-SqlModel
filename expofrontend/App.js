@@ -29,7 +29,7 @@ export default function App() {
           <Tab eventKey="history" title="Historik">
             Grafter!!!
           </Tab>
-          <Tab eventKey="privacy" title="Privatlivs Politik">
+          <Tab eventKey="info" title="Info">
             Text der skal være når man laver apps!!!
           </Tab>
         </Tabs>
