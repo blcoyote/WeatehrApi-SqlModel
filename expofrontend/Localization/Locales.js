@@ -8,7 +8,7 @@ let strings = new LocalizedStrings({
       history: "Historik",
       info: "Info",
       currentHeadline: "Seneste målinger",
-      currentDescription: "Placeholder, opdateres hver 5 min.",
+      currentDescription: "Placeholder, opdateres hver 5. min.",
     },
     weather: {
       id: "id",

@@ -3,6 +3,7 @@ import { apiHandler } from "../Functions/WeatherRequests";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import settings from "../Settings/config";
 
 // this class should contain logic to render statuscards based on reply from api /status
 // and render the lastest modified jobs wrapped in status cards.
@@ -102,7 +103,7 @@ export default class WeatherContainer extends Component {
       // day_delta is number of days to pull. result interval returns every Nth record. 12 = 1 record pr hour as records are 5 minute intervals
       // daydelta 1 and interval 12 returns 24 hours of records, with one record pr hour
       url:
-        this.props.host +
+        settings.apiHost +
         "/weatherstation/getweather?day_delta=1&result_interval=12",
       headers: {
         //token: this.props.token,

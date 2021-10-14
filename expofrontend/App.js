@@ -8,6 +8,7 @@ import WeatherContainer from "./Components/WeatherContainer";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import Container from "react-bootstrap/Container";
+import GraphContainer from "./Components/GraphContainer";
 
 import strings from "./Localization/Locales";
 

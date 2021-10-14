@@ -1,6 +1,5 @@
 export const settings = {
-    apiHost: "https://weather.elcoyote.dk",
-    appTitle: "Vejret i Galten",
+  apiHost: "https://weather.elcoyote.dk",
 };
 
 export default settings;

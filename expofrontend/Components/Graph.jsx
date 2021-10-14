@@ -95,6 +95,53 @@ const MyLineChart = () => {
   );
 };
 
+export const WeatherChart = (
+  header,
+  lables,
+  primaryData,
+  secondaryData,
+  yLabel
+) => {
+  return (
+    <>
+      <Text style={styles.header}>{header}</Text>
+      <LineChart
+        data={{
+          labels: { lables },
+          datasets: [
+            {
+              data: { primaryData },
+              strokeWidth: 2,
+            },
+            {
+              data: { secondaryData },
+              strokeWidth: 2,
+            },
+          ],
+        }}
+        width={widthCalculator()}
+        height={220}
+        yAxisLabel={yLabel}
+        chartConfig={{
+          backgroundColor: "#1cc910",
+          backgroundGradientFrom: "#eff3ff",
+          backgroundGradientTo: "#efefef",
+          decimalPlaces: 2, // optional, defaults to 2dp
+          color: (opacity = 255) => `rgba(0, 0, 0, ${opacity})`,
+          style: {
+            borderRadius: 16,
+          },
+        }}
+        bezier
+        style={{
+          marginVertical: 8,
+          borderRadius: 16,
+        }}
+      />
+    </>
+  );
+};
+
 const App = () => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
