@@ -37,7 +37,7 @@ const MyBezierLineChart = () => {
             },
           ],
         }}
-        width={Dimensions.get("window").width - 16} // from react-native
+        width={widthCalculator()} // from react-native - decide if this is < 500 - else 500
         height={220}
         yAxisLabel={"Rs"}
         chartConfig={{
@@ -74,7 +74,7 @@ const MyLineChart = () => {
             },
           ],
         }}
-        width={Dimensions.get("window").width - 16}
+        width={widthCalculator()}
         height={220}
         chartConfig={{
           backgroundColor: "#1cc910",
@@ -113,6 +113,14 @@ const App = () => {
 };
 
 export default App;
+
+const widthCalculator = () => {
+  if (Dimensions.get("window").width - 16 < 400) {
+    return Dimensions.get("window").width - 16;
+  } else {
+    return 400;
+  }
+};
 
 const styles = StyleSheet.create({
   container: {
