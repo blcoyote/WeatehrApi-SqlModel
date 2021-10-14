@@ -49,7 +49,7 @@ export default class WeatherContainer extends Component {
               {" "}
             </Col>
             <Col md="auto">
-              <h2>Seneste målinger</h2>
+              <h2>{this.props.strings.ui.currentHeadline}</h2>
             </Col>
             <Col xs lg="">
               {" "}
@@ -61,7 +61,7 @@ export default class WeatherContainer extends Component {
               {" "}
             </Col>
             <Col md="auto">
-              <h5>Placeholder, data opdateres med 5 min. interval.</h5>
+              <h5>{this.props.strings.ui.currentDescription}</h5>
             </Col>
             <Col xs lg="">
               {" "}
@@ -74,7 +74,7 @@ export default class WeatherContainer extends Component {
                 {" "}
               </Col>
               <Col md="auto">
-                <b>{this.keyprinter(key[0])}:</b> {key[1]}{" "}
+                <b>{this.props.strings.weather[key[0]]}:</b> {key[1]}{" "}
               </Col>
               <Col xs lg="">
                 {" "}
@@ -92,41 +92,6 @@ export default class WeatherContainer extends Component {
     //don't map keys beginning with 'indoor'
     if (!key.startsWith("indoor") && key !== "id") {
       return key;
-    }
-  };
-
-  keyprinter = (key) => {
-    switch (key) {
-      case "tempf":
-        return "temperatur";
-      case "dewptf":
-        return "dugpunkt";
-      case "windchillf":
-        return "windchill";
-      case "humidity":
-        return "luftfugtighed";
-      case "windspeedmph":
-        return "vindhastighed";
-      case "windgustmph":
-        return "vindstød";
-      case "winddir":
-        return "vindretning";
-      case "absbaromin":
-        return "abslufttryk";
-      case "baromin":
-        return "lufttryk";
-      case "rainin":
-        return "regn";
-      case "dailyrainin":
-        return "daglig regn";
-      case "weeklyrainin":
-        return "ugentlig regn";
-      case "monthlyrainin":
-        return "månedlig regn";
-      case "solarradiation":
-        return "solstråling";
-      default:
-        return key;
     }
   };
 
