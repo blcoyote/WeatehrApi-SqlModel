@@ -4,14 +4,15 @@ FROM node:13.12.0-alpine as build
 #setup and install dependencies
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
-COPY ./frontend/package.json ./
+COPY ./expofrontend/package.json ./
 RUN npm install --silent
 
 #copy source files to container
-COPY ./frontend ./
+COPY ./expofrontend ./
 
 # build webapp
-RUN npm run build
+#RUN npm run build
+RUN expo build:web
 
 
 
@@ -27,12 +28,16 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 LABEL traefik.http.routers.weather.rule=Host(`weather.elcoyote.dk`) \
     traefik.http.routers.weather.tls=true \
     traefik.http.routers.weather.tls.certresolver=lets-encrypt \
-    traefik.http.services.weather.loadbalancer.server.port=8000
+    traefik.http.services.weather.loadbalancer.server.port=8000 \
+    traefik.http.routers.vejr.rule=Host(`vejr.elcoyote.dk`) \
+    traefik.http.routers.vejr.tls=true \
+    traefik.http.routers.vejr.tls.certresolver=lets-encrypt \
+    traefik.http.services.vejr.loadbalancer.server.port=8000
 #LABEL traefik.port=80
 
 # transfer project files
 COPY ./backend /app
-COPY --from=build /app/build /app/wwwroot
+COPY --from=build /app/web-build /app/wwwroot
 
 WORKDIR /app
 

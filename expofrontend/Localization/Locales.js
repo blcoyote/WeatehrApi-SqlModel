@@ -33,7 +33,9 @@ let strings = new LocalizedStrings({
       realtime: "Realtid",
       rtfreq: "Opdaterings frekvens",
     },
-    graphs: {},
+    graphs: {
+
+    },
     info: {
       privacy: {},
       info: {},
@@ -71,7 +73,9 @@ let strings = new LocalizedStrings({
       realtime: "realtime",
       rtfreq: "Update frequency",
     },
-    graphs: {},
+    graphs: {
+
+    },
     info: {
       privacy: {},
       info: {},

@@ -3,7 +3,6 @@ import React, { Component } from "react";
 import settings from "./Settings/config";
 import { StyleSheet, Text, View } from "react-native";
 import "bootstrap/dist/css/bootstrap.css";
-import Graph from "./Components/Graph";
 import WeatherContainer from "./Components/WeatherContainer";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
@@ -37,14 +36,11 @@ export default class App extends Component {
             className="mb-3"
           >
             <Tab eventKey="home" title={strings.ui.home}>
-              <WeatherContainer
-                host={settings.apiHost}
-                strings={strings}
-              ></WeatherContainer>
+              <WeatherContainer strings={strings}></WeatherContainer>
             </Tab>
 
             <Tab eventKey="history" title={strings.ui.history}>
-              <Graph />
+              <GraphContainer strings={strings} />
             </Tab>
             <Tab eventKey="info" title={strings.ui.info}>
               Text der skal være når man laver apps!!!
