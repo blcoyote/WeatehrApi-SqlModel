@@ -4,12 +4,10 @@ FROM node:lts-alpine as build
 #setup and install dependencies
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
-COPY ./expofrontend/package.json ./
-RUN npm install -g expo-cli\
-    npm install -- silent
 
 #copy source files to container
 COPY ./expofrontend ./
+RUN yarn install
 
 # build webapp
 #RUN npm run build
