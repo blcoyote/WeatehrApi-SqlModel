@@ -1,11 +1,12 @@
 #Build and compile frontend
-FROM node:13.12.0-alpine as build
+FROM node:lts-alpine as build
 
 #setup and install dependencies
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 COPY ./expofrontend/package.json ./
-RUN npm install --silent
+RUN npm install -g expo-cli\
+    npm install -- silent
 
 #copy source files to container
 COPY ./expofrontend ./
