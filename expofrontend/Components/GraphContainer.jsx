@@ -4,6 +4,9 @@ import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { apiHandler } from "../Functions/WeatherRequests";
 import { WeatherGraph } from "../Components/GraphComponent";
 import { SafeAreaView, Dimensions, ScrollView } from "react-native";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 //import React Native chart Kit for different kind of Chart
 import { LineChart } from "react-native-chart-kit";
@@ -48,8 +51,9 @@ class ChartContainer extends Component {
         "winddir,",
         "solarradiation,",
       ];
-      let graphs = []; // array of generated graphs to display
 
+      // generate X-Axis labels
+      let graphs = []; // array of generated graphs to display
       for (let i = 0; i < unitOfWork.length; i++) {
         //generate legend labels
         let listOfGraph = unitOfWork[i].split(",");
@@ -62,7 +66,7 @@ class ChartContainer extends Component {
 
         //push graph to array
         graphs.push(
-          <WeatherGraph
+          <WeatherGraph className="col-md-3"
             legend={legend}
             labels={reducedLables}
             primaryData={generateDatasets(
@@ -84,7 +88,7 @@ class ChartContainer extends Component {
         <SafeAreaView style={{ flex: 1 }}>
           <ScrollView>
             <View style={graphstyles.container}>
-              <View>{graphs}</View>
+              {graphs}
             </View>
           </ScrollView>
         </SafeAreaView>
