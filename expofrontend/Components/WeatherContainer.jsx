@@ -4,12 +4,13 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import settings from "../Settings/config";
+import Loading from "../Functions/Spinner"
 
 // this class should contain logic to render statuscards based on reply from api /status
 // and render the lastest modified jobs wrapped in status cards.
 export default class WeatherContainer extends Component {
   state = {
-    weatherList: [],
+    weatherList: {},
     error: false,
     loading: false,
   };
@@ -31,13 +32,13 @@ export default class WeatherContainer extends Component {
   // add charts: https://github.com/recharts/recharts
   // add modular ui elements via https://react-bootstrap.github.io/components/cards/
   render() {
-    if (this.state.weatherList.length > 0) {
+    if (this.state.weatherList.hasOwnProperty("dateutc")) {
       // data has been populated, build content. First set in the weatherlist contain most recent measurement.
       //the rest is used for generating graphs.
       // placeholder, print latest observation as text.
-      const weatherArray = Object.keys(this.state.weatherList[0])
+      const weatherArray = Object.keys(this.state.weatherList)
         .filter((key) => this.filterKeys(key))
-        .map((key) => [key, this.state.weatherList[0][key]]);
+        .map((key) => [key, this.state.weatherList[key]]);
 
       // TODO:
       // function to convert contents such as winddirection from degrees to compass system and imperial to metric
@@ -86,7 +87,7 @@ export default class WeatherContainer extends Component {
       );
     }
     // loadspinner -v
-    else return <div></div>;
+    else return <> {<Loading/>}</>;
   }
 
   filterKeys = (key) => {
@@ -104,7 +105,7 @@ export default class WeatherContainer extends Component {
       // daydelta 1 and interval 12 returns 24 hours of records, with one record pr hour
       url:
         settings.apiHost +
-        "/weatherstation/getweather?day_delta=1&result_interval=12",
+        "/weatherstation/getlatest?imperial=false",
       headers: {
         //token: this.props.token,
         Accept: "application/json",

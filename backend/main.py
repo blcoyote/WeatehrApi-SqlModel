@@ -130,10 +130,9 @@ async def get_latest(imperial: Optional[bool] = False):
     try:
         with Session(database.engine) as session:
             statement = select(data_models.Observation
-                               ).order_by(data_models.Observation.id.desc()
-                                          ).first()
+                               ).order_by(data_models.Observation.id.desc())
 
-            result = session.exec(statement).one()
+            result = session.exec(statement).first()
 
             # convert to metric via inheritance with validator decorators.
             # Don't return response_model as Metric_Observation as conversions will otherwise be applied twice as its passing through the application stack

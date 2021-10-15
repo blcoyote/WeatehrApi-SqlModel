@@ -28,10 +28,8 @@ LABEL traefik.http.routers.weather.rule=Host(`weather.elcoyote.dk`) \
     traefik.http.routers.weather.tls=true \
     traefik.http.routers.weather.tls.certresolver=lets-encrypt \
     traefik.http.services.weather.loadbalancer.server.port=8000 \
-    traefik.http.routers.vejr.rule=Host(`vejr.elcoyote.dk`) \
-    traefik.http.routers.vejr.tls=true \
-    traefik.http.routers.vejr.tls.certresolver=lets-encrypt \
-    traefik.http.services.vejr.loadbalancer.server.port=8000
+    maintainer='Brian Leach Christensen <blc@elcoyote.dk>'
+
 #LABEL traefik.port=80
 
 # transfer project files

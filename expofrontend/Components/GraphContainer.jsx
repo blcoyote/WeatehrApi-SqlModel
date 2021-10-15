@@ -3,7 +3,8 @@ import settings from "../Settings/config";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { apiHandler } from "../Functions/WeatherRequests";
 import { WeatherGraph } from "../Components/GraphComponent";
-import { SafeAreaView, Dimensions, ScrollView } from "react-native";
+import { SafeAreaView, ScrollView } from "react-native";
+import Loading from "../Functions/Spinner";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -27,7 +28,7 @@ class ChartContainer extends Component {
     // instantiate cards with graphs
     if (this.state.loading) {
       //loading indicator spinner
-      return <div>{loading()}</div>;
+      return <Loading/>;
     } else {
       const labels = generateLabels("dateutc", this.state.weatherList);
 
@@ -146,32 +147,6 @@ const generateDatasets = (key, dataset) => {
   //generate a structure that can extrapolate single values ranges from the weatherobservation dataset.
   //perhaps returning arrays of all datapoints of a specific key. That can be used for graph generation
 };
-
-function loading() {
-  return (
-    // spinner if data isn't loaded.
-    <View style={[loadstyles.container, loadstyles.horizontal]}>
-      <br />
-      <br />
-      <br />
-      <br />
-      <ActivityIndicator size="large" />
-    </View>
-  );
-}
-
-//styles
-const loadstyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  horizontal: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    padding: 10,
-  },
-});
 
 const graphstyles = StyleSheet.create({
   container: {
