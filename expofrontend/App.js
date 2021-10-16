@@ -13,9 +13,6 @@ import strings from "./Localization/Locales";
 
 export default class App extends Component {
   state = {
-    weatherList: [],
-    error: false,
-    loading: false,
     locale: "dk",
   };
   componentDidMount() {}
@@ -35,14 +32,14 @@ export default class App extends Component {
             id="uncontrolled-tab-example"
             className="mb-3"
           >
-            <Tab eventKey="home" title={strings.ui.home}>
+            <Tab eventKey="home" title={strings.ui.home} key={1}>
               <WeatherContainer strings={strings}></WeatherContainer>
             </Tab>
 
-            <Tab eventKey="history" title={strings.ui.history}>
-              <GraphContainer strings={strings} />
+            <Tab eventKey="history" title={strings.ui.history} key={2}>
+              <GraphContainer strings={strings} /> 
             </Tab>
-            <Tab eventKey="info" title={strings.ui.info}>
+            <Tab eventKey="info" title={strings.ui.info} key={3}>
               Text der skal være når man laver apps!!!
             </Tab>
           </Tabs>
@@ -51,6 +48,8 @@ export default class App extends Component {
       </Container>
     );
   }
+
+
 }
 const styles = StyleSheet.create({
   container: {
