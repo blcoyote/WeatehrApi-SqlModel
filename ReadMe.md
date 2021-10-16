@@ -9,3 +9,4 @@ Backend is based on FastApi/Uvicorn/Gunicorn/SqlModel/Pydantic and a database ba
 
 External app for data visualisation under construction in /expofrontend. it's being built in React-Native-Expo that combiles for Android, IOS and Web in one codebase.
 
+Hosted on https://weather.elcoyote.dk, designed as a docker container behind a traefik reverse proxy handling automatic ssl certificate requisition.
