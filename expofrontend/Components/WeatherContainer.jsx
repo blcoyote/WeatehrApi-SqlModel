@@ -12,7 +12,7 @@ export default class WeatherContainer extends Component {
   state = {
     weatherList: {},
     error: false,
-    loading: false,
+    loading: true,
   };
 
   // trigger every 300.000 miliseconds (5 minutes)
@@ -32,7 +32,7 @@ export default class WeatherContainer extends Component {
   // add charts: https://github.com/recharts/recharts
   // add modular ui elements via https://react-bootstrap.github.io/components/cards/
   render() {
-    if (this.state.weatherList.hasOwnProperty("dateutc")) {
+    if (!this.state.loading) {
       // data has been populated, build content. First set in the weatherlist contain most recent measurement.
       //the rest is used for generating graphs.
       // placeholder, print latest observation as text.
@@ -118,7 +118,7 @@ export default class WeatherContainer extends Component {
 
   fetchSuccess = (props) => {
     //console.log(props.data);
-    this.setState({ weatherList: props.data, Error: false });
+    this.setState({ weatherList: props.data, error: false, loading: false });
   };
   fetchError = (props) => {
     //console.log(props);
