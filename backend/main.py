@@ -127,10 +127,15 @@ async def get_weather(day_delta: int = 1, result_interval: int = 12, imperial: O
 @app.get("/weatherstation/getlatest", status_code=status.HTTP_200_OK, response_model=data_models.Observation)
 async def get_latest(imperial: Optional[bool] = False):
 
+    # speed optimization. the query will take longer if i dont limit the range due to the amount of data in the table
+    time = datetime.utcnow() - timedelta(hours=1)
+
     try:
         with Session(database.engine) as session:
             statement = select(data_models.Observation
-                               ).order_by(data_models.Observation.id.desc())
+                               ).where(data_models.Observation.dateutc > time
+                                       ).order_by(data_models.Observation.id.desc()
+                                                  )
 
             result = session.exec(statement).first()
 
