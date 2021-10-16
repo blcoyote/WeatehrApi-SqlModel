@@ -33,7 +33,7 @@ class ChartContainer extends Component {
       const labels = generateLabels("dateutc", this.state.weatherList);
 
       //full json time string is too much text for lables. extract hour,min.
-      //update to round to nearest hour?
+      // CONVERT TO CURRENT TIME FROM UTC, HANDLE TZ+DST
       const reducedLables = generateLabels(
         "dateutc",
         this.state.weatherList
@@ -45,7 +45,7 @@ class ChartContainer extends Component {
       let unitOfWork = [
         "tempf,windchillf",
         "dewptf,",
-        "rainin,dailyrainin",
+        "dailyrainin",
         "humidity,",
         "baromin,",
         "windspeedmph,windgustmph",
@@ -53,8 +53,9 @@ class ChartContainer extends Component {
         "solarradiation,",
       ];
 
-      // generate X-Axis labels
-      let graphs = []; // array of generated graphs to display
+      
+      let graphs = []; // init array of generated graphs to display
+
       for (let i = 0; i < unitOfWork.length; i++) {
         //generate legend labels
         let listOfGraph = unitOfWork[i].split(",");
@@ -108,7 +109,10 @@ class ChartContainer extends Component {
         hour = 0;
       }
     }
-    return ("0" + hour).slice(-2);
+    // reduce amount of displayed lables to one every even hour-number. (gets crowded)
+    if (hour % 2 == 0){
+      return ("0" + hour).slice(-2);
+    } else {return ""}
   }
 
   //query api for status
