@@ -45,8 +45,8 @@ RUN pip install -r requirements.txt
 RUN groupadd -r api &&\
     useradd -ms /bin/bash apiuser -g api &&\
     chown -R apiuser:api /app &&\
-    chmod -R 755 /app \
-    rm -rf /app/log/
+    chmod 755 /app -R &&\
+    rm -rf /app/log
 
 
 
