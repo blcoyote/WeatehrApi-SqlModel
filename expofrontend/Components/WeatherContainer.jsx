@@ -1,13 +1,13 @@
 import React, { Component } from "react";
-import { apiHandler } from "../Functions/WeatherRequests";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+
 import settings from "../Settings/config";
 import Loading from "../Functions/Spinner"
+import { apiHandler } from "../Functions/WeatherRequests";
 
-// this class should contain logic to render statuscards based on reply from api /status
-// and render the lastest modified jobs wrapped in status cards.
+
 export default class WeatherContainer extends Component {
   state = {
     weatherList: {},

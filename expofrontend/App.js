@@ -1,19 +1,19 @@
 import { StatusBar } from "expo-status-bar";
 import React, { Component } from "react";
-import settings from "./Settings/config";
+
 import { StyleSheet, Text, View } from "react-native";
 import "bootstrap/dist/css/bootstrap.css";
 
-
-//import WeatherContainer from "./Components/WeatherContainer";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import Container from "react-bootstrap/Container";
 
+import strings from "./Localization/Locales";
+import settings from "./Settings/config";
 const WeatherContainer = React.lazy(() => import('./Components/WeatherContainer'));
 const GraphContainer = React.lazy(() => import('./Components/GraphContainer')); 
 
-import strings from "./Localization/Locales";
+
 
 export default class App extends Component {
   state = {

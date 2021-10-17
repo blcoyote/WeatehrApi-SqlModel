@@ -1,18 +1,14 @@
 import React, { Component } from "react";
-import settings from "../Settings/config";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
-import { apiHandler } from "../Functions/WeatherRequests";
-import { WeatherGraph } from "../Components/GraphComponent";
+import { StyleSheet, View } from "react-native";
 import { SafeAreaView, ScrollView } from "react-native";
 import Loading from "../Functions/Spinner";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 
-//import React Native chart Kit for different kind of Chart
-import { LineChart } from "react-native-chart-kit";
+import settings from "../Settings/config";
+import { apiHandler } from "../Functions/WeatherRequests";
+import { WeatherGraph } from "../Components/GraphComponent";
 
-class ChartContainer extends Component {
+
+export class ChartContainer extends Component {
   state = {
     weatherList: [],
     error: false,
