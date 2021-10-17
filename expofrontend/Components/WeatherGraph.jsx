@@ -6,6 +6,7 @@ import { LineChart } from "react-native-chart-kit";
 
 export class WeatherGraph extends Component {
   render() {
+    const datapoint = this.props.primaryData[0]
     return (
       <>
         <LineChart
@@ -33,7 +34,7 @@ export class WeatherGraph extends Component {
             backgroundColor: "#1cc910",
             backgroundGradientFrom: "#eff3ff",
             backgroundGradientTo: "#efefef",
-            decimalPlaces: 1, // optional, defaults to 2dp
+            decimalPlaces: datapoint < 5 ? 1 : 0, // optional, defaults to 2dp
             color: (opacity = 255) => `rgba(0, 0, 0, ${opacity})`,
             style: {
               borderRadius: 16,
@@ -53,10 +54,10 @@ export class WeatherGraph extends Component {
 export default WeatherGraph;
 
 const widthCalculator = () => {
-  if (Dimensions.get("window").width - 16 < 600) {
+  if (Dimensions.get("window").width - 16 < 700) {
     return Dimensions.get("window").width - 16;
   } else {
-    return 600;
+    return 700;
   }
 };
 
