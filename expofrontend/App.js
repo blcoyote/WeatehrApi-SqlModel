@@ -3,11 +3,15 @@ import React, { Component } from "react";
 import settings from "./Settings/config";
 import { StyleSheet, Text, View } from "react-native";
 import "bootstrap/dist/css/bootstrap.css";
-import WeatherContainer from "./Components/WeatherContainer";
+
+
+//import WeatherContainer from "./Components/WeatherContainer";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import Container from "react-bootstrap/Container";
-import GraphContainer from "./Components/GraphContainer";
+
+const WeatherContainer = React.lazy(() => import('./Components/WeatherContainer'));
+const GraphContainer = React.lazy(() => import('./Components/GraphContainer')); 
 
 import strings from "./Localization/Locales";
 
@@ -22,6 +26,7 @@ export default class App extends Component {
     document.title = strings.ui.pageTitle;
 
     return (
+      <React.Suspense fallback={<div></div>}>
       <Container>
         <br />
         <br />
@@ -46,6 +51,7 @@ export default class App extends Component {
           <StatusBar style="auto" />
         </View>
       </Container>
+      </React.Suspense>
     );
   }
 
