@@ -45,9 +45,13 @@ RUN pip install -r requirements.txt
 RUN groupadd -r api &&\
     useradd -ms /bin/bash apiuser -g api &&\
     chown -R apiuser:api /app &&\
-    chmod -R 755 /app
+    chmod -R 755 /app \
+    rm -rf /app/log/
+
+
 
 USER apiuser
+
 
 # Tell gunicorn to use port 8000 instead of 80, since host 80 is occupied'
 #ENV BIND="0.0.0.0:8000"

@@ -29,7 +29,6 @@ export default class WeatherContainer extends Component {
   }
 
 
-  // add modular ui elements via https://react-bootstrap.github.io/components/cards/
   render() {
     if (!this.state.loading) {
       // data has been populated, build content. First set in the weatherlist contain most recent measurement.
@@ -38,9 +37,6 @@ export default class WeatherContainer extends Component {
       const weatherArray = Object.keys(this.state.weatherList)
         .filter((key) => this.filterKeys(key))
         .map((key) => [key, this.state.weatherList[key]]);
-
-      // TODO:
-      // function to convert contents such as winddirection from degrees to compass system
 
       return (
         <Container>
