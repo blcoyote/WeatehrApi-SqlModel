@@ -49,8 +49,8 @@ RUN groupadd -r api &&\
 
 USER apiuser
 
-# Tell gunicorn to use port 8080 instead of 80, since host 80 is occupied'
-#ENV BIND="0.0.0.0:8080"
+# Tell gunicorn to use port 8000 instead of 80, since host 80 is occupied'
+#ENV BIND="0.0.0.0:8000"
 ENV PORT="8000"
 EXPOSE 8000
 
