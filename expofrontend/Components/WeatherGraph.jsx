@@ -53,10 +53,10 @@ export class WeatherGraph extends Component {
 export default WeatherGraph;
 
 const widthCalculator = () => {
-  if (Dimensions.get("window").width - 16 < 500) {
+  if (Dimensions.get("window").width - 16 < 600) {
     return Dimensions.get("window").width - 16;
   } else {
-    return 500;
+    return 600;
   }
 };
 

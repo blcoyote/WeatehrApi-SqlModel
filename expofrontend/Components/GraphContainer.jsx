@@ -5,7 +5,7 @@ import Loading from "../Functions/Spinner";
 
 import settings from "../Settings/config";
 import { apiHandler } from "../Functions/WeatherRequests";
-import { WeatherGraph } from "../Components/GraphComponent";
+import { WeatherGraph } from "../Components/WeatherGraph";
 
 
 export class ChartContainer extends Component {
