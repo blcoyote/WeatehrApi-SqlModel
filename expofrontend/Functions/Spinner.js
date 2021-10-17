@@ -5,7 +5,6 @@ import React from "react";
 export default class Loading extends React.PureComponent {
     render () {
     return (
-      // spinner if data isn't loaded.
       <View style={[loadstyles.container, loadstyles.horizontal]}>
         <br />
         <br />
