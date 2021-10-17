@@ -28,8 +28,7 @@ export default class WeatherContainer extends Component {
     clearInterval(this.interval);
   }
 
-  // add loadspinners.
-  // add charts: https://github.com/recharts/recharts
+
   // add modular ui elements via https://react-bootstrap.github.io/components/cards/
   render() {
     if (!this.state.loading) {
@@ -41,8 +40,7 @@ export default class WeatherContainer extends Component {
         .map((key) => [key, this.state.weatherList[key]]);
 
       // TODO:
-      // function to convert contents such as winddirection from degrees to compass system and imperial to metric
-      // unknown if it should be done before or after assigning to weatherArray
+      // function to convert contents such as winddirection from degrees to compass system
 
       return (
         <Container>
