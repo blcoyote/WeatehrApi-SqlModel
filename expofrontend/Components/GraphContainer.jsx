@@ -102,13 +102,22 @@ class ChartContainer extends Component {
     const labelData = label.split(":");
 
     let hour = Number(labelData[0]);
+
+    const date = new Date();
+    const offset = date.getTimezoneOffset()/60; //returns difference between current time and utc. utc+2 for instance will be -120 (minutes)
+    const reverseOffset = offset * -1 // multiply by -1 to get number to add to hour to get correct timestamp from utc value
+
     //round to nearest hour
+    hour = hour + reverseOffset;
+
+
     if (Number(labelData[1] > 30)) {
       hour += 1;
       if (hour == 24) {
         hour = 0;
       }
     }
+
     // reduce amount of displayed lables to one every even hour-number. (gets crowded)
     if (hour % 2 == 0){
       return ("0" + hour).slice(-2);
@@ -165,6 +174,8 @@ const generateDatasets = (key, dataset) => {
   //generate a structure that can extrapolate single values ranges from the weatherobservation dataset.
   //perhaps returning arrays of all datapoints of a specific key. That can be used for graph generation
 };
+
+
 
 const graphstyles = StyleSheet.create({
   container: {
