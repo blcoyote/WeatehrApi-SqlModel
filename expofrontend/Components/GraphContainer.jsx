@@ -93,10 +93,15 @@ export class ChartContainer extends Component {
 
   LabelCreate = (label) => {
     var date = new Date(label + "Z");
-    // reset datetime to closest full hour to get consistent lables
-    date.setHours(date.getHours() + Math.round(date.getMinutes() / 60));
-    date.setMinutes(0, 0, 0); // Resets also seconds and milliseconds
-    return date.getHours();
+
+    //return every even hour in which an observation was made.
+    if (date.getHours() % 2 === 0){
+      
+      return date.getHours();
+    } else {
+
+      return " "
+    }
   };
 
   //query api for status
