@@ -93,13 +93,10 @@ export class ChartContainer extends Component {
 
   LabelCreate = (label) => {
     var date = new Date(label + "Z");
-
     //return every even hour in which an observation was made.
     if (date.getHours() % 2 === 0){
-      
       return date.getHours();
     } else {
-
       return " "
     }
   };

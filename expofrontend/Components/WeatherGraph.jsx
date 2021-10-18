@@ -34,8 +34,8 @@ export class WeatherGraph extends Component {
             backgroundColor: "#1cc910",
             backgroundGradientFrom: "#eff3ff",
             backgroundGradientTo: "#efefef",
-            decimalPlaces: Number(this.props.primaryData[0]).toFixed(1).length > 3 ? 0 : 1, // use first value to determine 0 or 1 decimal points
-            color: (opacity = 255) => `rgba(0, 0, 0, ${opacity})`,
+            decimalPlaces: Number(this.props.primaryData[0]).toFixed(1).length > 3 ? 0 : 1,
+            color: (opacity = 255) => `rgba(0, 0, 0, ${opacity})`, 
             style: {
               borderRadius: 16,
             },
