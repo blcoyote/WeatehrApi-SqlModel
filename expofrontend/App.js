@@ -1,21 +1,49 @@
 import { StatusBar } from "expo-status-bar";
 import React, { Component } from "react";
+import { ScrollView, RefreshControl, SafeAreaView } from 'react-native';
+import Constants from 'expo-constants';
+import { StyleSheet, View } from "react-native";
 
-import { StyleSheet, Text, View } from "react-native";
 import "bootstrap/dist/css/bootstrap.css";
-
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import Container from "react-bootstrap/Container";
 
 import strings from "./Localization/Locales";
-import settings from "./Settings/config";
 const WeatherContainer = React.lazy(() => import('./Components/WeatherContainer'));
 const GraphContainer = React.lazy(() => import('./Components/GraphContainer')); 
 
 
 
-export default class App extends Component {
+const wait = timeout => {
+  return new Promise(resolve => {
+    setTimeout(resolve, timeout);
+  });
+};
+
+export default function App() {
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+
+    wait(2000).then(() => setRefreshing(false));
+  }, []);
+
+  return (    
+    <SafeAreaView style={ScrollStyles.container}>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        <Frontpage></Frontpage>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+
+
+export class Frontpage extends Component {
   state = {
     locale: "dk",
   };
@@ -63,5 +91,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "top",
+  },
+});
+
+const ScrollStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: Constants.statusBarHeight,
   },
 });
