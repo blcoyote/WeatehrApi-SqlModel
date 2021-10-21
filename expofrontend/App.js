@@ -1,8 +1,8 @@
 import { StatusBar } from "expo-status-bar";
 import React, { Component } from "react";
 import { ScrollView, RefreshControl, SafeAreaView } from 'react-native';
-import Constants from 'expo-constants';
 import { StyleSheet, View } from "react-native";
+import Constants from 'expo-constants';
 
 import "bootstrap/dist/css/bootstrap.css";
 import Tabs from "react-bootstrap/Tabs";
