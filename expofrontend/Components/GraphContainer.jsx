@@ -59,9 +59,9 @@ export class ChartContainer extends Component {
       ];
 
       let graphs = []; // init array of generated graphs to display
-
-      for (let i = 0; i < unitOfWork.length; i++) {
         //generate legend labels
+      for (let i = 0; i < unitOfWork.length; i++) {
+
         let listOfGraph = unitOfWork[i].split(",");
         let legend = [];
         for (let i = 0; i < listOfGraph.length; i++) {
@@ -73,7 +73,6 @@ export class ChartContainer extends Component {
         //push graph to array
         graphs.push(
           <WeatherGraph
-            className="col-md-3"
             legend={legend}
             labels={reducedLables}
             primaryData={generateDatasets(
@@ -100,14 +99,14 @@ export class ChartContainer extends Component {
       );
     }
   }
-
+//return every even hour in which an observation was made.
   LabelCreate = (label) => {
     var date = new Date(label + "Z");
-    //return every even hour in which an observation was made.
+    
     if (date.getHours() % 2 === 0){
       return date.getHours();
     } else {
-      return " "
+      return ""
     }
   };
 
@@ -166,7 +165,7 @@ const graphstyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
-    justifyContent: "top",
+    justifyContent: "flex-start",
     alignItems: "center",
     textAlign: "center",
     padding: 10,

@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import {Text, View} from 'react-native';
 
 import settings from "../Settings/config";
 import Loading from "../Functions/Spinner"
@@ -28,66 +26,58 @@ export default class WeatherContainer extends Component {
     clearInterval(this.interval);
   }
 
-
-  render() {
-    if (!this.state.loading) {
       // data has been populated, build content. First set in the weatherlist contain most recent measurement.
       //the rest is used for generating graphs.
       // placeholder, print latest observation as text.
+  render() {
+    if (!this.state.loading) {
+
       const weatherArray = Object.keys(this.state.weatherList)
         .filter((key) => this.filterKeys(key))
         .map((key) => [key, this.state.weatherList[key]]);
 
       return (
-        <Container>
-          <Row className="justify-content-md-center">
-            <Col xs lg="">
-              {" "}
-            </Col>
-            <Col md="auto">
-              <h2>{this.props.strings.ui.currentHeadline}</h2>
-            </Col>
-            <Col xs lg="">
-              {" "}
-            </Col>
-          </Row>
+        <View style={{flex: 1, justifyContent:"flex-start", alignSelf:"center", alignItems:"center"}}>
+          
+          <View style={{flexDirection:'row', height: 20}}></View>
+          <View style={{flexDirection:'row'}}>
+              <Text style={{fontWeight:"bold", fontSize:40}}>
+                {this.props.strings.ui.currentHeadline}
+              </Text>
+          </View>
 
-          <Row className="justify-content-md-center">
-            <Col xs lg="">
-              {" "}
-            </Col>
-            <Col md="auto">
-              <h5>{this.props.strings.ui.currentDescription}</h5>
-            </Col>
-            <Col xs lg="">
-              {" "}
-            </Col>
-          </Row>
+          <View style={{flexDirection:'row'}}>
+              <Text style={{fontSize:20}}>
+                {this.props.strings.ui.currentDescription}
+              </Text>
+          </View>
+
+        <View style={{height: 20, flexDirection:'row'}}></View>
 
           {weatherArray.map((key) => (
-            <Row key={key[0]} className="justify-content-md-center">
-              <Col xs lg="">
-                {" "}
-              </Col>
-              <Col md="auto">
-                <b>{this.props.strings.weather[key[0]]}:</b> {key[1]}{" "}
-              </Col>
-              <Col xs lg="">
-                {" "}
-              </Col>
-            </Row>
+            <View key={key[0]} style={{flexDirection:'row'}}>
+                <Text style={{fontWeight: "bold"}}>
+                  {this.props.strings.weather[key[0]]}
+                </Text>
+                  <Text>{": "}</Text>
+                <Text> 
+                  {key[1]}
+                </Text> 
+            </View>
           ))}
-        </Container>
+
+        </View>
       );
     }
-    // loadspinner -v
-    else return <> {<Loading/>}</>;
+    else return  <View style={{flexDirection:'row', height: 200}} ><Loading /></View>;
   }
 
   filterKeys = (key) => {
     //don't map keys beginning with 'indoor'
     if (!key.startsWith("indoor") && key !== "id") {
       return key;
+    }  else {
+      return null
     }
   };
 

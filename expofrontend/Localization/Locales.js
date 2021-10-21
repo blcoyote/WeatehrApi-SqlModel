@@ -1,6 +1,6 @@
 import LocalizedStrings from "react-localization";
 
-let strings = new LocalizedStrings({
+const strings = new LocalizedStrings({
   dk: {
     ui: {
       pageTitle: "Vejret i Galten",
@@ -60,7 +60,7 @@ let strings = new LocalizedStrings({
       humidity: "Humidity",
       windspeedmph: "Windspeed",
       windgustmph: "Windgust",
-      winddir: "Vindretning",
+      winddir: "Winddirection",
       absbaromin: "Abs. Air pressure",
       baromin: "Air pressure",
       rainin: "Rain",
