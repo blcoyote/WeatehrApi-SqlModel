@@ -46,6 +46,7 @@ export default function App() {
 export class Frontpage extends Component {
   state = {
     locale: "dk",
+    activeTab: "home",
   };
   componentDidMount() {}
 
@@ -61,9 +62,10 @@ export class Frontpage extends Component {
         <View style={styles.container}>
           <Tabs
             variant="tabs"
-            defaultActiveKey="home"
+            defaultActiveKey={this.state.activeTab}
             id="uncontrolled-tab-example"
             className="mb-3"
+            onSelect={this.selectTab}
           >
             <Tab eventKey="home" title={strings.ui.home} key={1}>
               <WeatherContainer strings={strings}></WeatherContainer>
@@ -81,6 +83,10 @@ export class Frontpage extends Component {
       </Container>
       </React.Suspense>
     );
+  }
+
+  selectTab =(key) => {
+    this.setState({activeTab: key})
   }
 
 
