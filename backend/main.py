@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.staticfiles import StaticFiles
 from pydantic.tools import parse_obj_as
-from sqlmodel import Session, select
+from sqlmodel import Session, select, func, text
 from loguru import logger
 import requests
 from starlette.websockets import WebSocket, WebSocketDisconnect
@@ -89,6 +89,18 @@ async def store(PASSWORD: str, observation: data_models.Observation = Depends(da
 # TODO: rework result_interval. Currently slices results and returns every Nth item.
 # To get hourly intervals enter 12 as incoming observersions are stored every 5 minutes.
 # Endpoint is public. Sharing is caring.
+# NEW:
+# https://chartio.com/resources/tutorials/how-to-execute-raw-sql-in-sqlalchemy/
+# https://stackoverflow.com/questions/52952734/how-to-perform-date-trunc-query-in-postgres-using-sqlalchemy
+# select *
+# from (
+#     select * ,
+#            row_number() over (partition by date_trunc('hour', dateutc)) as r
+#     from "Observations"
+# ) as dt
+# where r = 1
+# and dateutc > (NOW() - interval '1 day')
+# order by id desc;
 @app.get("/weatherstation/getweather", status_code=status.HTTP_200_OK, response_model=List[data_models.Observation])
 async def get_weather(day_delta: int = 1, result_interval: int = 12, imperial: Optional[bool] = False):
 
@@ -123,6 +135,51 @@ async def get_weather(day_delta: int = 1, result_interval: int = 12, imperial: O
     except Exception as ex:
         logger.exception(
             f"failed weather lookup with day_delta: {day_delta}, result_interval {result_interval}", ex)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Database lookup failed"
+        )
+
+
+@app.get("/weatherstation/gethourly", status_code=status.HTTP_200_OK, response_model=List[data_models.Observation])
+async def get_weather_new(day_delta: int = 1, imperial: Optional[bool] = False):
+
+    if (day_delta > 31 or day_delta <= 0):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="day_delta must be between 0 and 31"
+        )
+    time = datetime.utcnow() - timedelta(days=day_delta)
+
+    try:
+        with Session(database.engine) as session:
+
+            statement = select(data_models.Observation).from_statement(text(f"""select *
+                            from (
+                                select * ,row_number() over (partition by date_trunc('hour', dateutc)) as r
+                                from "public"."Observations"
+                            ) as dt
+                            where r = 1
+                            and dateutc > (NOW() - interval ':x day')
+                            order by id desc;"""))
+
+            state2 = select(data_models.Observation).from_statement(text("""select * ,row_number() over (partition by date_trunc('hour', dateutc)) as r
+                                from "public"."Observations" """))
+
+            results = session.execute(statement, {"x": day_delta}).all()
+
+            list = [i[0] for i in results]
+            # convert to metric via inheritance with validator decorators.
+            # Don't return response_model as Metric_Observation as conversions will otherwise be applied twice as its passing through the application stack
+            if imperial:  # switch between imperial and metric measurements. Imperial is standard form the source.
+                return list
+            else:
+                metric_results = parse_obj_as(
+                    List[(data_models.Metric_Observation)], list)
+                return metric_results
+    except Exception as ex:
+        logger.exception(
+            f"failed weather lookup with day_delta: {day_delta}", ex)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Database lookup failed"

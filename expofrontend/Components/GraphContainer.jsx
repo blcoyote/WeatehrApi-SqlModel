@@ -112,7 +112,7 @@ export class ChartContainer extends Component {
       // daydelta 1 and interval 12 returns 24 hours of records, with one record pr hour
       url:
         settings.apiHost +
-        "/weatherstation/getweather?day_delta=1&result_interval=12",
+        "/weatherstation/gethourly?day_delta=1",
       headers: {
         //token: this.props.token,
         Accept: "application/json",
