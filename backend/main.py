@@ -61,7 +61,6 @@ async def store(PASSWORD: str, observation: data_models.Observation = Depends(da
     if PASSWORD == get_settings().ACCESSCTL:
 
         try:
-
             if get_settings().WINDY_ENABLED:
                 url = "https://stations.windy.com/pws/update/%s?winddir=%s&windspeedmph=%s&windgustmph=%s&tempf=%s&rainin=%s&baromin=%s&dewptf=%s&humidity=%s&dateutc=%s" % (
                     parse.quote_plus(get_settings().WINDYKEY), observation.winddir, observation.windspeedmph, observation.windgustmph, observation.tempf, observation.rainin, observation.baromin, observation.dewptf, observation.humidity, observation.dateutc)
@@ -73,12 +72,19 @@ async def store(PASSWORD: str, observation: data_models.Observation = Depends(da
             with Session(database.engine) as session:
                 session.add(observation)
                 session.commit()
-            await notifier.push(observation.dict())
         except Exception as ex:
             logger.exception("Error saving observation to database", ex)
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        try:
+            await notifier.push(observation.dict())
+        except Exception as ex:
+            logger.exception("error pushing websocket", ex)
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return
+
     else:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED
