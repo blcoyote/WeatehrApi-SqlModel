@@ -6,11 +6,12 @@ from pydantic.tools import parse_obj_as
 from sqlmodel import Session, select
 from loguru import logger
 import requests
+from starlette.websockets import WebSocket, WebSocketDisconnect
 from starlette.types import Message
 import uvicorn
 from datetime import datetime, timedelta
 from urllib import parse
-from core import security, data_models, database
+from core import security, data_models, database, websockets
 from core.settings import get_settings, VERSION
 from typing import List, Optional
 
@@ -30,6 +31,7 @@ app.add_middleware(
 )
 
 # add middleware to capture logs
+notifier = websockets.Notifier()
 
 
 @app.middleware("http")
@@ -48,6 +50,7 @@ async def log_middle(request: Request, call_next):
 @app.on_event("startup")
 async def startup_event():
     logger.debug("Starting logging.")
+    await notifier.generator.asend(None)
 
 
 # Posting weather data from station. not user endpoint.
@@ -58,6 +61,7 @@ async def store(PASSWORD: str, observation: data_models.Observation = Depends(da
     if PASSWORD == get_settings().ACCESSCTL:
 
         try:
+
             if get_settings().WINDY_ENABLED:
                 url = "https://stations.windy.com/pws/update/%s?winddir=%s&windspeedmph=%s&windgustmph=%s&tempf=%s&rainin=%s&baromin=%s&dewptf=%s&humidity=%s&dateutc=%s" % (
                     parse.quote_plus(get_settings().WINDYKEY), observation.winddir, observation.windspeedmph, observation.windgustmph, observation.tempf, observation.rainin, observation.baromin, observation.dewptf, observation.humidity, observation.dateutc)
@@ -69,6 +73,7 @@ async def store(PASSWORD: str, observation: data_models.Observation = Depends(da
             with Session(database.engine) as session:
                 session.add(observation)
                 session.commit()
+            await notifier.push(observation.dict())
         except Exception as ex:
             logger.exception("Error saving observation to database", ex)
             raise HTTPException(
@@ -190,6 +195,18 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         "token_type": "bearer",
         "expiry": datetime.now() + timedelta(minutes=get_settings().ACCESS_TOKEN_EXPIRE_MINUTES)
     }
+
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await notifier.connect(websocket)
+    try:
+        while True:
+
+            data = await websocket.receive_text()
+            # await websocket.send_text(data)
+    except WebSocketDisconnect:
+        notifier.remove(websocket)
 
 
 # test endpoint1 to be deactivated

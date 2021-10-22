@@ -87,7 +87,7 @@ async def websocket_endpoint(websocket: WebSocket):
     try:
         while True:
             data = await websocket.receive_text()
-            await websocket.send_text(f"Message text was: {data}")
+            # await websocket.send_text(f"Message text was: {data}")
     except WebSocketDisconnect:
         notifier.remove(websocket)
 

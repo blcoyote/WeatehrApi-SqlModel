@@ -2,26 +2,16 @@ import React, { Component, useEffect } from "react";
 import { ScrollView, RefreshControl, SafeAreaView, StatusBar } from 'react-native';
 import { StyleSheet, Text, Dimensions, View, Button, Image, TouchableOpacity, ImageBackground } from "react-native";
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+
 import flag from "./assets/flag.jpg"
-
-
-//import "bootstrap/dist/css/bootstrap.css";
-//import Tabs from "react-bootstrap/Tabs";
-//import Tab from "react-bootstrap/Tab";
-
-
 import strings from "./Localization/Locales";
-//strings.setLanguage("dk");
 const WeatherContainer = React.lazy(() => import('./Components/WeatherContainer'));
 const GraphContainer = React.lazy(() => import('./Components/GraphContainer')); 
 
 
-// bootstrap dorsnt work in android. needs to be replaced with something else
-//https://reactnativeelements.com/docs/tab
-
 const HomeRoute = () => (
   <React.Suspense fallback={<Text>{""}</Text>}>
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }} >
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white", justifyContent:"flex-start", alignSelf:"center", alignItems:"center"}} >
       <WeatherContainer strings={strings}/>
     </SafeAreaView>
   </React.Suspense>
@@ -29,7 +19,7 @@ const HomeRoute = () => (
 
 const HistoryRoute = () => (
   <React.Suspense fallback={<Text>{""}</Text>}>
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }} >
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white", justifyContent:"flex-start", alignSelf:"center", alignItems:"center"}} >
     <GraphContainer strings={strings} /> 
     </SafeAreaView>
   </React.Suspense>
@@ -66,7 +56,7 @@ export default function App() {
 
   
   return (    
-      <View>
+      <View fluid>
         <StatusBar></StatusBar> 
         <View style={{backgroundColor:"#123456", height: 50}}>
           <TouchableOpacity title={""} onPress={() => language()} style={{background: `url(${flag})`, width: 25, height: 17, positon: 'absolute', top: 30, left: 20}}>

@@ -39,7 +39,7 @@ export default class WeatherContainer extends Component {
       return (
         <View style={{flex: 1, justifyContent:"flex-start", alignSelf:"center", alignItems:"center"}}>
           
-          <View style={{flexDirection:'row', height: 20}}></View>
+          <View style={{flexDirection:'row', height: 5}}></View>
           <View style={{flexDirection:'row'}}>
               <Text style={{fontWeight:"bold", fontSize:40}}>
                 {this.props.strings.ui.currentHeadline}
