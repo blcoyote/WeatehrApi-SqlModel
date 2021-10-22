@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { StyleSheet, View } from "react-native";
 import { SafeAreaView, ScrollView } from "react-native";
+
 import Loading from "../Functions/Spinner";
 
 import settings from "../Settings/config";
@@ -17,16 +18,10 @@ export class ChartContainer extends Component {
   // trigger every 900.000 miliseconds (15 minutes)
   componentDidMount() {
     this.fetchWeather();
-    this.interval = setInterval(() => {
-      this.fetchWeather();
-    }, 900000);
   }
 
   //clear timer when component is unmounted.
-  componentWillUnmount() {
-    clearInterval(this.interval);
-  }
-
+  componentWillUnmount() {}
 
   render() {
     // fetch data, generate datasets for graphs
@@ -59,9 +54,8 @@ export class ChartContainer extends Component {
       ];
 
       let graphs = []; // init array of generated graphs to display
-        //generate legend labels
+      //generate legend labels
       for (let i = 0; i < unitOfWork.length; i++) {
-
         let listOfGraph = unitOfWork[i].split(",");
         let legend = [];
         for (let i = 0; i < listOfGraph.length; i++) {
@@ -99,14 +93,14 @@ export class ChartContainer extends Component {
       );
     }
   }
-//return every even hour in which an observation was made.
+  //return every even hour in which an observation was made.
   LabelCreate = (label) => {
     var date = new Date(label + "Z");
-    
-    if (date.getHours() % 2 === 0){
+
+    if (date.getHours() % 2 === 0) {
       return date.getHours();
     } else {
-      return ""
+      return "";
     }
   };
 
