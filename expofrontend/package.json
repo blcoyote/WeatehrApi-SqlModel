@@ -19,6 +19,7 @@
     "expo-updates": "~0.8.1",
     "https": "^1.0.0",
     "package.json": "^2.0.1",
+    "prop-types": "^15.5.7",
     "react": "16.13.1",
     "react-bootstrap": "^1.6.4",
     "react-dom": "16.13.1",
@@ -31,7 +32,6 @@
     "react-native-safe-area-context": "3.2.0",
     "react-native-screens": "~3.4.0",
     "react-native-svg": "^12.1.1",
-    "react-native-svg-charts": "^5.4.0",
     "react-native-tab-view": "^3.1.1",
     "react-native-unimodules": "0.14.10",
     "react-native-web": "~0.13.12"
