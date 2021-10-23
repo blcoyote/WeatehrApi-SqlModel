@@ -18,7 +18,7 @@ from typing import List, Optional
 # instantiate api.
 logger.remove(0)
 logger.add(f"./log/apilog_{datetime.now().strftime('%Y-%m-%d')}.log", rotation="1 day",
-           colorize=False, format="{time:YYYY-MM-DD HH:mm:ss.SSS} | {level} | <level>{message}</level>")
+           colorize=False, format="{time:YYYY-MM-DD HH:mm:ss.SSS} | {level} | <level>{message}</level>", level="debug")
 
 app = FastAPI(title='Weatherstation API',
               version=VERSION, debug=False)
@@ -78,7 +78,9 @@ async def store(PASSWORD: str, observation: data_models.Observation = Depends(da
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         try:
+            logger.debug("Pushing observation to websocket")
             await notifier.push(observation.dict())
+            logger.debug("Done")
         except Exception as ex:
             logger.exception("error pushing websocket", ex)
             raise HTTPException(
