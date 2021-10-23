@@ -62,8 +62,10 @@ async def store(PASSWORD: str, observation: data_models.Observation = Depends(da
 
     if PASSWORD == get_settings().ACCESSCTL:
         try:
+            metric_obs = parse_obj_as(
+                data_models.Metric_Observation, observation)
             logger.debug("Pushing observation to websocket")
-            await notifier._notify(observation.json())
+            await notifier._notify(metric_obs.json())
             logger.debug("Done")
         except Exception as ex:
             logger.exception("error pushing websocket", ex)
@@ -171,9 +173,6 @@ async def get_weather_new(day_delta: int = 1, imperial: Optional[bool] = False):
                             where r = 1
                             and dateutc > (NOW() - interval ':x day')
                             order by id desc;"""))
-
-            state2 = select(data_models.Observation).from_statement(text("""select * ,row_number() over (partition by date_trunc('hour', dateutc)) as r
-                                from "public"."Observations" """))
 
             results = session.execute(statement, {"x": day_delta}).all()
 
