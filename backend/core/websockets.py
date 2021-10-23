@@ -1,7 +1,5 @@
 from typing import List
-
-from fastapi import FastAPI
-from starlette.responses import HTMLResponse
+from loguru import logger
 from starlette.websockets import WebSocket, WebSocketDisconnect
 
 
@@ -16,7 +14,11 @@ class Notifier:
             await self._notify(message)
 
     async def push(self, msg: str):
-        await self.generator.asend(msg)
+        logger.debug(msg)
+        try:
+            await self.generator.asend(msg)
+        except Exception as ex:
+            logger.exception(ex)
 
     async def connect(self, websocket: WebSocket):
         await websocket.accept()

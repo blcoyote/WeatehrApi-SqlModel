@@ -1,3 +1,4 @@
+from ecdsa.numbertheory import modular_exp
 from fastapi import Depends, FastAPI, HTTPException, status, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
@@ -7,18 +8,18 @@ from sqlmodel import Session, select, func, text
 from loguru import logger
 import requests
 from starlette.websockets import WebSocket, WebSocketDisconnect
-from starlette.types import Message
 import uvicorn
+import json
 from datetime import datetime, timedelta
 from urllib import parse
-from core import security, data_models, database, websockets
+from core import security, data_models, database, websockets, settings
 from core.settings import get_settings, VERSION
 from typing import List, Optional
 
 # instantiate api.
 logger.remove(0)
 logger.add(f"./log/apilog_{datetime.now().strftime('%Y-%m-%d')}.log", rotation="1 day",
-           colorize=False, format="{time:YYYY-MM-DD HH:mm:ss.SSS} | {level} | <level>{message}</level>", level="debug")
+           colorize=False, format="{time:YYYY-MM-DD HH:mm:ss.SSS} | {level} | <level>{message}</level>")
 
 app = FastAPI(title='Weatherstation API',
               version=VERSION, debug=False)
@@ -58,7 +59,16 @@ async def startup_event():
 # parameters are mapped to an Observation model in Depends
 @app.get("/weatherstation/updateweatherstation.php", status_code=status.HTTP_201_CREATED)
 async def store(PASSWORD: str, observation: data_models.Observation = Depends(data_models.create_observation)):
+
     if PASSWORD == get_settings().ACCESSCTL:
+        try:
+            logger.debug("Pushing observation to websocket")
+            await notifier._notify(observation.json())
+            logger.debug("Done")
+        except Exception as ex:
+            logger.exception("error pushing websocket", ex)
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         try:
             if get_settings().WINDY_ENABLED:
@@ -74,15 +84,6 @@ async def store(PASSWORD: str, observation: data_models.Observation = Depends(da
                 session.commit()
         except Exception as ex:
             logger.exception("Error saving observation to database", ex)
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-        try:
-            logger.debug("Pushing observation to websocket")
-            await notifier.push(observation.dict())
-            logger.debug("Done")
-        except Exception as ex:
-            logger.exception("error pushing websocket", ex)
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return
@@ -262,10 +263,14 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     }
 
 
-@app.websocket("/ws")
+@app.websocket_route("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await notifier.connect(websocket)
     try:
+
+        data = database.get_latest(imperial=False).json()
+        # logger.debug(data)
+        await websocket.send_text(data)
         while True:
 
             data = await websocket.receive_text()

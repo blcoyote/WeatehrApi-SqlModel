@@ -33,26 +33,23 @@ LABEL traefik.http.routers.weather.rule=Host(`weather.elcoyote.dk`) \
 #LABEL traefik.port=80
 
 # transfer project files
-COPY ./backend /app
-COPY --from=build /app/web-build /app/wwwroot
+COPY ./backend/requirements.txt /app
 
 WORKDIR /app
-
-# Install dependencies:
 RUN pip install -r requirements.txt
 
+
+COPY ./backend /app
+COPY --from=build /app/web-build /app/wwwroot
 # Change user so we dont run our application as root.
 RUN groupadd -r api &&\
     useradd -ms /bin/bash apiuser -g api &&\
     chown -R apiuser:api /app &&\
     chmod 755 /app -R &&\
-    chown -R apiuser:api /app/wwwroot &&\
-    chmod 755 /app/wwwroot -R &&\
     rm -rf /app/log
 
-
-
 USER apiuser
+
 
 
 # Tell gunicorn to use port 8000 instead of 80, since host 80 is occupied'

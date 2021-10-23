@@ -1,23 +1,10 @@
-from pydantic import BaseModel, validator
+from core.database import get_latest
+import json
+from json import JSONEncoder
+from pprint import pprint
+import datetime
 
 
-# testing using validation decorators as automatic value converters.
-class TestClass(BaseModel):
-    value: int
+data = get_latest(False)
 
-    @validator('value')
-    def convert(cls, v: int):
-        v = v + 3
-        return v
-
-
-testclass = TestClass(value=2)
-
-print(testclass.value)
-# Output: 5, success
-
-v = 72
-
-v = (v - 32) * 5.0/9.0
-
-print(v)
+print(data.json())
