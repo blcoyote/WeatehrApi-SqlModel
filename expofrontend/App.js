@@ -86,6 +86,7 @@ export default function App() {
           <TouchableOpacity
             title={""}
             onPress={() => language()}
+            onClick={() => language()}
             style={{
               background: `url(${flag})`,
               width: 25,
