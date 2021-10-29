@@ -4,8 +4,6 @@ import { Dimensions } from "react-native";
 //https://www.npmjs.com/package/react-native-chart-kit
 import { LineChart } from "react-native-chart-kit";
 
-//https://www.npmjs.com/package/recharts/v/2.0.0-beta.1
-
 export class WeatherGraph extends Component {
   render() {
     //generate datasets
