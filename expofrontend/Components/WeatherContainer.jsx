@@ -13,7 +13,7 @@ export default class WeatherContainer extends Component {
   };
 
   timeout = 250;
-  // trigger every 300.000 miliseconds (5 minutes)
+
   componentDidMount() {
     this.connect();
   }
