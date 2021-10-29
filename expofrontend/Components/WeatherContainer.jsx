@@ -14,12 +14,11 @@ export default class WeatherContainer extends Component {
 
   timeout = 250;
   // trigger every 300.000 miliseconds (5 minutes)
-  componentWillMount() {
+  componentDidMount() {
     this.connect();
   }
 
   //clear timer when component is unmounted.
-  componentWillUnmount() {}
 
   connect = () => {
     var ws = new WebSocket(settings.websocketHost + "/ws");

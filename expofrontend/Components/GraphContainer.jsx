@@ -15,12 +15,9 @@ export class ChartContainer extends Component {
   };
 
   // trigger every 900.000 miliseconds (15 minutes)
-  componentWillMount() {
+  componentDidMount() {
     this.fetchWeather();
   }
-
-  //clear timer when component is unmounted.
-  componentWillUnmount() {}
 
   render() {
     // fetch data, generate datasets for graphs
