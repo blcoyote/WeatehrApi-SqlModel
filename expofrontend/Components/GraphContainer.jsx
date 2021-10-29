@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import { StyleSheet, View } from "react-native";
-import { SafeAreaView, ScrollView } from "react-native";
 
 import Loading from "../Functions/Spinner";
 
 import settings from "../Settings/config";
-import { apiHandler } from "../Functions/WeatherRequests";
+import { apiContent } from "../Functions/WeatherRequests";
 import { WeatherGraph } from "../Components/WeatherGraph";
 
 export class ChartContainer extends Component {
@@ -16,7 +15,7 @@ export class ChartContainer extends Component {
   };
 
   // trigger every 900.000 miliseconds (15 minutes)
-  componentDidMount() {
+  componentWillMount() {
     this.fetchWeather();
   }
 
@@ -84,13 +83,7 @@ export class ChartContainer extends Component {
       }
 
       // print graphs
-      return (
-        <SafeAreaView style={{ flex: 1 }}>
-          <ScrollView>
-            <View style={graphstyles.container}>{graphs}</View>
-          </ScrollView>
-        </SafeAreaView>
-      );
+      return <View style={graphstyles.container}>{graphs}</View>;
     }
   }
   //return every even hour in which an observation was made.
@@ -110,9 +103,7 @@ export class ChartContainer extends Component {
       method: "get",
       // day_delta is number of days to pull. result interval returns every Nth record. 12 = 1 record pr hour as records are 5 minute intervals
       // daydelta 1 and interval 12 returns 24 hours of records, with one record pr hour
-      url:
-        settings.apiHost +
-        "/weatherstation/gethourly?day_delta=1",
+      url: settings.apiHost + "/weatherstation/gethourly?day_delta=1",
       headers: {
         //token: this.props.token,
         Accept: "application/json",
@@ -120,14 +111,14 @@ export class ChartContainer extends Component {
       },
     };
     //console.log(configuration);
-    apiHandler(configuration, this.fetchSuccess, this.fetchError);
+    apiContent(configuration, this.fetchSuccess, this.fetchError);
   };
 
   fetchSuccess = (props) => {
-    //console.log(props.data);
+    // console.log(props);
     // reverse list to get earliest point first - for graphs.
     this.setState({
-      weatherList: props.data.reverse(),
+      weatherList: props.reverse(),
       error: false,
       loading: false,
     });
@@ -138,8 +129,6 @@ export class ChartContainer extends Component {
   };
 }
 
-export default ChartContainer;
-
 const generateLabels = (key, dataset) => {
   // generate list of lables (24 hours) depending on latest timestamp
   return dataset.map((observations) => observations[key]);
@@ -147,7 +136,7 @@ const generateLabels = (key, dataset) => {
 
 const generateDatasets = (key, dataset) => {
   if (dataset[0].hasOwnProperty(key)) {
-    return dataset.map((observations) => Number(observations[key]));
+    return dataset.map((observations) => observations[key]);
   } else {
     return [];
   }
@@ -171,3 +160,5 @@ const graphstyles = StyleSheet.create({
     marginTop: 16,
   },
 });
+
+export default ChartContainer;

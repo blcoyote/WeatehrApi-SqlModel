@@ -3,7 +3,6 @@ import { Text, View } from "react-native";
 
 import settings from "../Settings/config";
 import Loading from "../Functions/Spinner";
-import { apiHandler } from "../Functions/WeatherRequests";
 
 export default class WeatherContainer extends Component {
   state = {
@@ -11,23 +10,16 @@ export default class WeatherContainer extends Component {
     error: false,
     loading: true,
     ws: null,
-    dataFromServer: [],
   };
 
   timeout = 250;
   // trigger every 300.000 miliseconds (5 minutes)
-  componentDidMount() {
+  componentWillMount() {
     this.connect();
-    // this.fetchWeather();
-    // this.interval = setInterval(() => {
-    //   this.fetchWeather();
-    // }, 300000);
   }
 
   //clear timer when component is unmounted.
-  componentWillUnmount() {
-    // clearInterval(this.interval);
-  }
+  componentWillUnmount() {}
 
   connect = () => {
     var ws = new WebSocket(settings.websocketHost + "/ws");
@@ -71,7 +63,7 @@ export default class WeatherContainer extends Component {
 
     ws.onmessage = (evt) => {
       // listen to data sent from the websocket server
-      console.log(evt);
+      //console.log(evt);
       const message = JSON.parse(evt.data);
       this.setState({ weatherList: message });
       //console.log(message)
@@ -106,13 +98,13 @@ export default class WeatherContainer extends Component {
         >
           <View style={{ flexDirection: "row", height: 5 }}></View>
           <View style={{ flexDirection: "row" }}>
-            <Text style={{ fontWeight: "bold", fontSize: 30 }}>
+            <Text style={{ fontWeight: "bold", fontSize: 28 }}>
               {this.props.strings.ui.currentHeadline}
             </Text>
           </View>
 
           <View style={{ flexDirection: "row" }}>
-            <Text style={{ fontSize: 20 }}>
+            <Text style={{ fontSize: 15 }}>
               {this.props.strings.ui.currentDescription}
             </Text>
           </View>
@@ -145,31 +137,5 @@ export default class WeatherContainer extends Component {
     } else {
       return null;
     }
-  };
-
-  //query api for status
-  fetchWeather = () => {
-    var configuration = {
-      method: "get",
-      // day_delta is number of days to pull. result interval returns every Nth record. 12 = 1 record pr hour as records are 5 minute intervals
-      // daydelta 1 and interval 12 returns 24 hours of records, with one record pr hour
-      url: settings.apiHost + "/weatherstation/getlatest?imperial=false",
-      headers: {
-        //token: this.props.token,
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    };
-    //console.log(configuration);
-    apiHandler(configuration, this.fetchSuccess, this.fetchError);
-  };
-
-  fetchSuccess = (props) => {
-    //console.log(props.data);
-    this.setState({ weatherList: props.data, error: false, loading: false });
-  };
-  fetchError = (props) => {
-    //console.log(props);
-    this.setState({ error: true });
   };
 }
