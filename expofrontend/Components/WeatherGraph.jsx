@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, Dimensions } from "react-native";
+import { Dimensions } from "react-native";
 
 //https://www.npmjs.com/package/react-native-chart-kit
 import { LineChart } from "react-native-chart-kit";
@@ -8,22 +8,29 @@ import { LineChart } from "react-native-chart-kit";
 
 export class WeatherGraph extends Component {
   render() {
+    //generate datasets
+    let datasets = [];
+
+    if (this.props.primaryData) {
+      datasets.push({
+        data: this.props.primaryData,
+        strokeWidth: 2,
+        color: (opacity = 1) => `rgba(0, 65, 244, ${opacity})`, // optional
+      });
+    }
+    if (this.props.secondaryData) {
+      datasets.push({
+        data: this.props.secondaryData,
+        strokeWidth: 2,
+        color: (opacity = 1) => `rgba(128, 0, 0, ${opacity})`, // optional
+      });
+    }
+
     return (
       <LineChart
         data={{
           labels: this.props.labels,
-          datasets: [
-            {
-              data: this.props.primaryData,
-              strokeWidth: 2,
-              color: (opacity = 1) => `rgba(0, 65, 244, ${opacity})`, // optional
-            },
-            {
-              data: this.props.secondaryData,
-              strokeWidth: 2,
-              color: (opacity = 1) => `rgba(128, 0, 0, ${opacity})`, // optional
-            },
-          ],
+          datasets: datasets,
           legend: this.props.legend,
         }}
         width={widthCalculator()}
@@ -51,8 +58,6 @@ export class WeatherGraph extends Component {
   }
 }
 
-export default WeatherGraph;
-
 const widthCalculator = () => {
   if (Dimensions.get("window").width - 16 < 700) {
     return Dimensions.get("window").width - 16;
@@ -61,19 +66,4 @@ const widthCalculator = () => {
   }
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    textAlign: "center",
-    padding: 10,
-  },
-  header: {
-    textAlign: "center",
-    fontSize: 18,
-    padding: 16,
-    marginTop: 16,
-  },
-});
+export default WeatherGraph;
