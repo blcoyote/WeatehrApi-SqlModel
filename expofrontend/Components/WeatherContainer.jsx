@@ -78,7 +78,7 @@ export default class WeatherContainer extends Component {
   };
 
   // data has been populated, build content. First set in the weatherlist contain most recent measurement.
-  //the rest is used for generating graphs.
+  // the rest is used for generating graphs.
   // placeholder, print latest observation as text.
   render() {
     if (this.state.weatherList) {
