@@ -7,7 +7,8 @@ ENV PATH /app/node_modules/.bin:$PATH
 
 #copy source files to container
 COPY ./expofrontend ./
-RUN yarn
+RUN yarn &&\
+    yarn global add expo-cli
 
 # build webapp
 #RUN npm run build
@@ -46,6 +47,8 @@ RUN groupadd -r api &&\
     useradd -ms /bin/bash apiuser -g api &&\
     chown -R apiuser:api /app &&\
     chmod 755 /app -R &&\
+    chown -R apiuser:api /app/wwwroot &&\
+    chmod 755 /app/wwwroot -R &&\
     rm -rf /app/log
 
 USER apiuser

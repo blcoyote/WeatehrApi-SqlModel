@@ -87,9 +87,11 @@ export default class WeatherContainer extends Component {
         .map((key) => [key, this.state.weatherList[key]]);
 
       return (
-        <View
+        <View fluid
           style={{
+            width:"100%",
             flex: 1,
+            backgroundColor: "white",
             justifyContent: "flex-start",
             alignSelf: "center",
             alignItems: "center",

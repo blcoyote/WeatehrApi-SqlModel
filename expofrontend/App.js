@@ -51,8 +51,10 @@ const InfoRoute = () => (
   <React.Suspense fallback={<Text>{""}</Text>}>
     <Text
       style={{
+        width:"100%",
         flex: 1,
-        justifyContent: "flex-start",
+        backgroundColor: "white",
+        justifyContent: "center",
         alignSelf: "center",
         alignItems: "center",
       }}
@@ -79,7 +81,7 @@ export default function App() {
   ]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#123456" }}>
       <View fluid>
         <StatusBar></StatusBar>
         <View style={{ backgroundColor: "#123456", height: 50 }}>
