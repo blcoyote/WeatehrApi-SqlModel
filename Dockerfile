@@ -7,7 +7,7 @@ ENV PATH /app/node_modules/.bin:$PATH
 
 #copy source files to container
 COPY ./expofrontend ./
-RUN yarn install
+RUN yarn
 
 # build webapp
 #RUN npm run build
