@@ -1,6 +1,7 @@
 import React from "react";
 import { SafeAreaView, StatusBar } from "react-native";
 import {
+  ScrollView,
   StyleSheet,
   Text,
   Dimensions,
@@ -34,6 +35,7 @@ const HomeRoute = () => (
 
 const HistoryRoute = () => (
   <React.Suspense fallback={<Text>{""}</Text>}>
+    <ScrollView>
     <GraphContainer
       style={{
         flex: 1,
@@ -44,6 +46,7 @@ const HistoryRoute = () => (
       }}
       strings={strings}
     />
+    </ScrollView>
   </React.Suspense>
 );
 
