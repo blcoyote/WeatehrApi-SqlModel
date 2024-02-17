@@ -1,6 +1,6 @@
 fastapi[all]==0.68.2
 bcrypt==3.2.0
-cryptography==42.0.0
+cryptography==42.0.2
 passlib
 python-jose==3.2.0
 psycopg2_binary==2.8.6
