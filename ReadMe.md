@@ -1,5 +1,7 @@
 # WeatherApi
 
+# ... Legacy repo
+
 ## Purpose
 
 Privately store data from a weatherstation while forwarding to windy's api (https://www.windy.com).
